@@ -1,0 +1,18 @@
+header {
+    height: 65px;
+
+    #nav-admin {
+        background-color: #036aab !important;
+        height: 100%;
+        
+        .icon-user {
+            padding-bottom: 5px;
+        }
+
+        ul {
+            li {
+                text-align: justify;
+            }
+        }
+    }
+}

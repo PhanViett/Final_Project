@@ -1,0 +1,57 @@
+#category {
+  .rst__rowWrapper {
+    cursor: pointer !important;
+  }
+  .container-content {
+    width: 250px;
+  }
+
+  .input-content {
+    text-overflow: ellipsis;
+
+    /* Needed to make it work */
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1200px) {
+  #category {
+    .container-content {
+      width: 180px;
+    }
+    .rst__rowWrapper {
+      width: 270px;
+    }
+  }
+}
+@media (max-width: 991px) {
+  #category {
+    .container-content {
+      width: 300px;
+    }
+    .rst__rowWrapper {
+      width: 400px;
+    }
+  }
+}
+@media (max-width: 767px) {
+  #category {
+    .container-content {
+      width: 80px;
+    }
+    .rst__rowWrapper {
+      width: 240px;
+    }
+  }
+}
+@media (max-width: 575px) {
+  #category {
+    .container-content {
+      width: 180px;
+    }
+    .rst__rowWrapper {
+      width: 120px;
+    }
+  }
+}

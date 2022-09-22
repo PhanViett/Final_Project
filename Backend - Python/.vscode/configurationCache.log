@@ -1,0 +1,1 @@
+{"buildTargets":["build","db-init","db-migrate","db-upgrade","init","init-migration","lint","run","test","tox"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

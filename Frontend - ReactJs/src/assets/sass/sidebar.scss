@@ -1,0 +1,41 @@
+#sidebar {
+    .pro-sidebar-inner {
+        .pro-sidebar-layout {
+            .pro-sidebar-content {
+                .pro-menu {
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+
+                    .pro-menu-item {
+                        .pro-icon-wrapper {
+                            background-color: transparent !important;
+                            font-size: 16px;
+                        }
+
+                        .pro-inner-item {
+                            padding: 8px 32px 8px 10px;
+
+                            .pro-item-content {
+                                .active::before {
+                                    background-color: #04eef9;
+                                    opacity: 0.2;
+                                }
+
+                                button {
+                                    padding: 0px;
+                                }
+                            }
+                        }
+
+                        .react-slidedown {
+                            ul {
+                                padding-top: 0px;
+                                padding-bottom: 0px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
