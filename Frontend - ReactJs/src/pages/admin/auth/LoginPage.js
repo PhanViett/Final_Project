@@ -1,197 +1,170 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
 
-import axios from "axios";
-import { useFormik } from "formik";
-import BlockUi from "react-block-ui";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { Navigate, NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import * as Yup from "yup";
+import { Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 
-import { TailSpin } from "react-loader-spinner";
-import api from "../../../configs/api";
-import { loginSuccess } from "../../../saga-modules/auth/actions";
 
 export function LoginPage() {
-    var md5 = require("md5");
-    const loginSchema = Yup.object().shape({
-        username: Yup.string()
-            .min(3, "Minimum 3 symbols")
-            .max(50, "Maximum 50 symbols")
-            .required("Email is required"),
-        password: Yup.string()
-            .min(3, "Minimum 3 symbols")
-            .max(50, "Maximum 50 symbols")
-            .required("Password is required"),
-    });
-
-    const initialValues = {
-        username: "",
-        password: "",
-    };
-
-    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    let navigate = useNavigate();
 
-    const isAuthorized = useSelector(
-        (state) => state.auth.isAuthorized,
-        shallowEqual
-    );
+    const [form, setForm] = useState();
+    const [errors, setErrors] = useState();
+    const [loading, setLoading] = useState(false);
 
-    const formik = useFormik({
-        initialValues,
-        validationSchema: loginSchema,
-        onSubmit: (values, { setStatus, setSubmitting }) => {
-            let dataLogin = {
-                username: values.username,
-                password: md5(values.password),
-            };
-            setLoading(true);
-            axios
-                .post(api.API_LOGIN, dataLogin)
-                .then(({ data }) => {
-                    dispatch(loginSuccess({ dataLogin: data }));
-                    navigate("/admin");
-                    setLoading(false);
-                })
-                .catch((error) => {
+    const [type, setType] = useState("password");
+    const [icon, setIcon] = useState("fas fa-eye text-primary mx-auto");
 
-                    toast.error(error.response?.data?.msg, {
-                        position: "top-right",
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        toastId: "error",
-                    });
-                    setLoading(false);
-                });
-        },
-    });
-    const getInputClasses = (fieldname) => {
-        if (formik.touched[fieldname] && formik.errors[fieldname]) {
-            return "is-invalid";
-        }
-
-        if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-            return "is-valid";
-        }
-
-        return "";
+    const setField = (field, value) => {
+        setForm({
+            ...form,
+            [field]: value,
+        });
+        if (!!errors[field])
+            setErrors({
+                ...errors,
+                [field]: null,
+            });
     };
 
-    if (isAuthorized) {
-        return <Navigate to="/admin" />;
+    function showOrHide(e) {
+        e.preventDefault()
+        type === "password" ? setType("text") : setType("password");
+
+
+        if (type === "password") {
+            setType("text");
+            setIcon("fas fa-eye-slash text-primary mx-auto")
+        } else if (type === "text") {
+            setType("password");
+            setIcon("fas fa-eye text-primary mx-auto");
+        }
     }
 
     return (
-        <>
-            <div id="loginPage" className="container ">
-                <div className="row justify-content-center mt-5">
-                    <div className="col-lg-4 col-md-6 col-sm-6">
-                        <div className="card shadow">
-                            <div className="card-title text-center border-bottom">
-                                <NavLink to={"/"}>
-                                    <h2 className="p-3">
-                                        <img
-                                            className="logo border-0"
-                                            src="/media/Logo_BoYTe.png"
+        <div id="loginPage">
+            <div className="row justify-content-center">
+                <div className="col-sm-8 col-lg-5 col-xl-4">
+                    <div className="text-center w-100 m-auto">
+                        <div className="auth-logo">
+                            <NavLink to="/" className="logo logo-dark text-center">
+                                <span className="logo">
+                                    <img
+                                        className="img-logo"
+                                        src="media/logos/Logo_BoYTe.png"
+                                        alt=""
+                                        height="90"
+                                        width="90"
+                                    />
+                                </span>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="box-login-wrapper card border-0">
+                        <div className="card-body w-100 w-md-75 py-3 px-5 m-auto">
+                            <Form>
+                                <Form.Group>
+                                    <div className="row mb-8">
+                                        <span
+                                            className="mb-3"
+                                            style={{ fontSize: "1rem", fontWeight: 600 }}
+                                        >
+                                            Tên đăng nhập
+                                        </span>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Tên đăng nhập"
+                                            style={{ fontSize: 14, fontWeight: 400 }}
+                                            onChange={(e) => {
+                                                setField("username", e.target.value);
+                                            }}
                                         />
-                                    </h2>
-                                </NavLink>
-                            </div>
-                            <div className="card-body">
-                                <BlockUi
-                                    tag="div"
-                                    blocking={loading}
-                                    loader={
-                                        <TailSpin
-                                            arialLabel="loading-indicator"
-                                            height={60}
-                                            width={60}
-                                            strokeWidth={2}
-                                            strokeWidthSecondary={1}
-                                            color="blue"
-                                            secondaryColor="blue"
-                                            wrapperClass={"d-inline-flex"}
-                                        />
-                                    }
-                                >
-                                    <form
-                                        onSubmit={formik.handleSubmit}
-                                        noValidate
-                                        id="kt_login_signin_form"
-                                    >
-                                        <div className="mb-2 form-group">
-                                            <label className="form-label d-block p-0">
-                                                Username/Email
-                                            </label>
-                                            <input
-                                                label="Tên đăng nhập"
-                                                placeholder="Tên đăng nhập"
-                                                type="username"
-                                                className={`${getInputClasses(
-                                                    "username"
-                                                )} w-100 form-control`}
-                                                name="username"
-                                                {...formik.getFieldProps("username")}
-                                            />
-                                        </div>
-                                        {formik.touched.username && formik.errors.username ? (
-                                            <div className="fv-plugins-message-container">
-                                                <div className="text-danger fv-help-block">
-                                                    {formik.errors.username}
-                                                </div>
-                                            </div>
-                                        ) : null}
-                                        <div className="mb-4 form-group">
-                                            <label className="form-label d-block">Password</label>
-                                            <input
+                                    </div>
+                                    <div className="row mb-9">
+                                        <span
+                                            className="mb-3"
+                                            style={{ fontSize: "1rem", fontWeight: 600 }}
+                                        >
+                                            Mật khẩu
+                                        </span>
+                                        <div className="input-group px-0" id="show_hide_password">
+                                            <Form.Control
+                                                className="inputPassword"
+                                                type={type}
                                                 placeholder="Mật khẩu"
-                                                type="password"
-                                                className={`${getInputClasses(
-                                                    "password"
-                                                )} w-100 form-control`}
-                                                name="password"
-                                                {...formik.getFieldProps("password")}
+                                                style={{ fontSize: 14, fontWeight: 400 }}
+                                                onChange={(e) => {
+                                                    setField("password", e.target.value);
+                                                }}
+                                                autoComplete="off"
                                             />
-                                            {formik.touched.password && formik.errors.password ? (
-                                                <div className="fv-plugins-message-container">
-                                                    <div className="text-danger fv-help-block">
-                                                        {formik.errors.password}
-                                                    </div>
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                        <div className="d-grid">
-                                            {!loading && (
-                                                <button
-                                                    type="submit"
-                                                    className="btn text-light btn-success"
-                                                >
-                                                    Đăng nhập
+                                            <div className="input-group-addon">
+                                                <button type="button" className="btn btn-light showHidePassword ps-4 pe-3" onClick={showOrHide}>
+                                                    <i className={icon}></i>
                                                 </button>
-                                            )}
-                                            {loading && (
-                                                <span
-                                                    className="indicator-progress"
-                                                    style={{ display: "block" }}
-                                                >
-                                                    Please wait...
-                                                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                                </span>
-                                            )}
+                                            </div>
                                         </div>
-                                    </form>
-                                </BlockUi>
+                                    </div>
+                                </Form.Group>
+
+                                <div className="form-group mb-1 text-center">
+                                    <button
+                                        className="btn btn-primary btn-block btn-login"
+                                        style={{ width: "100%" }}
+                                        type="submit"
+                                        onClick={(e) => {
+                                        }}
+                                    >
+                                        {loading ? (
+                                            <span
+                                                className="indicator-progress"
+                                                style={{ display: "block" }}
+                                            >
+                                                Vui lòng chờ...
+                                                <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                <i className="fas fa-chevron-circle-right"></i>
+                                                Đăng nhập
+                                            </span>
+                                        )}
+                                    </button>
+                                </div>
+                            </Form>
+                            <div className="form-group text-center mb-3">
+                                <NavLink to="/dang-ky">Bạn chưa có tài khoản?</NavLink>
+                            </div>
+
+                            <div className="form-group float-start">
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value=""
+                                        id="flexCheckDefault"
+                                        defaultChecked
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        htmlFor="flexCheckDefault"
+                                    >
+                                        Lưu mật khẩu
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="form-group float-end">
+                                <NavLink to="/forgot-password" className="forgot-password">
+                                    Quên mật khẩu
+                                </NavLink>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

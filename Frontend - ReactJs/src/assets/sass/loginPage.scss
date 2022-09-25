@@ -1,0 +1,41 @@
+#loginPage {
+    width: 100vw;
+    height: 100vh;
+    padding: 12vh 0 1.5rem 0;
+    background: linear-gradient(
+        301deg,
+        rgb(2, 0, 36) 0%,
+        rgb(62, 160, 234) 0%,
+        rgb(7, 44, 161) 50%,
+        rgb(137, 205, 242) 100%
+    );
+
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .box-login-wrapper {
+        height: auto !important;
+        background-color: #013082;
+        border-radius: 1rem;
+    }
+
+    input {
+        font-size: 0.9rem;
+    }
+
+    .footer {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0 !important;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        color: #25b7f0;
+        text-align: center;
+        background-color: transparent;
+        padding: 19px 15px 20px;
+    }
+}
+

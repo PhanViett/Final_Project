@@ -1,8 +1,11 @@
-@import url(./main.scss);
-@import url(./nav.scss);
-@import url(./breadcrumbs.scss);
-@import url(./main.scss);
-@import url(./colors.scss);
-@import url(./loadingFullPage.scss);
-@import url(./category.scss);
-@import url(./sidebar.scss);
+@import url(./layout/nav.scss);
+@import url(./layout/main.scss);
+@import url(./layout/sidebar.scss);
+
+@import url(./libraries/breadcrumbs.scss);
+
+@import url(./materials/colors.scss);
+@import url(./materials/category.scss);
+@import url(./materials/loadingFullPage.scss);
+
+@import url(./loginPage.scss);
