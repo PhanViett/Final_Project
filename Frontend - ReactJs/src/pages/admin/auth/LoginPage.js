@@ -75,7 +75,7 @@ export function LoginPage() {
                                         </span>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Tên đăng nhập"
+                                            placeholder="Tên đăng nhập"clear
                                             style={{ fontSize: 14, fontWeight: 400 }}
                                             onChange={(e) => {
                                                 setField("username", e.target.value);

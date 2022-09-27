@@ -79,7 +79,6 @@ const Aside = ({ collapsed, toggled, handleToggleSidebar }) => {
       }
     }
   };
-  console.log("menuNamemenuNamemenuName", menuName);
   return (
     <ProSidebar
       image={false}

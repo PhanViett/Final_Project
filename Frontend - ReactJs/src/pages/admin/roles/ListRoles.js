@@ -105,7 +105,6 @@ export function ListRoles() {
   };
 
   const changeArray = (array) => {
-    console.log("log array", array);
     let arrayRoles = [];
     for (let i = 0; i < array.length; i++) {
       if (array[i].children && array[i].children.length) {
@@ -120,7 +119,6 @@ export function ListRoles() {
   };
 
   const changeArrayParent = (array) => {
-    console.log("log array", array);
     let arrayRoles = [];
     for (let i = 0; i < array.length; i++) {
       arrayRoles.push(array[i].value);
@@ -170,7 +168,6 @@ export function ListRoles() {
       .get(api.ROLES + "/" + id)
       .then(async ({ data }) => {
         let { results } = data;
-        console.log("data detail", data);
         setSelectedRoles(results);
         setField("ten", results?.ten);
         setChecked(changeArray(JSON.parse(results?.vai_tro)));
@@ -279,7 +276,6 @@ export function ListRoles() {
     const newErrors = {};
     // name errors
     if (!ten || ten === "") newErrors.ten = "Tên không được bỏ trống!";
-    console.log("log newErrors", newErrors);
     return newErrors;
   };
 
@@ -327,7 +323,6 @@ export function ListRoles() {
         }
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error?.response?.data?.msg, {
           position: "top-right",
           autoClose: 2000,
@@ -629,12 +624,10 @@ export function ListRoles() {
                       checked={checked}
                       expanded={expanded}
                       onCheck={async (checked, node) => {
-                        console.log("checked", checked);
                         setChecked(checked);
                         changeArrayRoles(checked);
                       }}
                       onExpand={(expanded, node) => {
-                        console.log("log expanded", expanded);
                         setExpanded(expanded);
                       }}
                       checkModel="all"

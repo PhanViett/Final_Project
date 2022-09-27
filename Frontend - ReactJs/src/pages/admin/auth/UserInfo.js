@@ -69,7 +69,6 @@ export function UserInfo() {
         axios
             .get(api.LIST_USER + "/" + userInfo?.id)
             .then(async ({ data }) => {
-                console.log("log data", data);
                 setForm(data?.nguoi_dung)
             })
             .catch((error) => {
@@ -97,7 +96,6 @@ export function UserInfo() {
         const newErrors = findFormErrors();
         // Conditional logic:
         if (Object.keys(newErrors).length > 0) {
-            console.log(newErrors);
             // We got errors!
             setErrors(newErrors);
         } else {
@@ -114,7 +112,6 @@ export function UserInfo() {
         }
         axios.put(api.LIST_USER + "/" + userInfo?.id, jsonUpdateUser)
             .then(async ({ data }) => {
-                console.log("log data", data);
                 toast.success("Cập nhật thông tin thành công", {
                     position: "top-right",
                     autoClose: 2000,

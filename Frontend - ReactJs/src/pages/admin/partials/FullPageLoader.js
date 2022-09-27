@@ -6,7 +6,6 @@ class FullPageLoader extends Component {
     state = {};
 
     render() {
-        console.log("log loading", this.props.loading);
         const { loading } = this.props;
 
         if (!loading) return null;

@@ -23,7 +23,6 @@ export function AddRole() {
   const setCheckedValue = () => {
     let value = [];
 
-    console.log(checked);
     for (let node of nodes) {
       value.push(node.value);
       if (node.children !== undefined) {
@@ -37,7 +36,6 @@ export function AddRole() {
         }
       }
     }
-    console.log("log note", nodes);
     setCheckAll(value);
   };
 
@@ -249,7 +247,6 @@ export function AddRole() {
                     onClick={() => {
                       setIsCheck(true);
                       setChecked(checkall);
-                      console.log(checked);
                     }}
                   >
                     <i class="fas fa-check"></i> Check all
@@ -261,7 +258,6 @@ export function AddRole() {
                     onClick={() => {
                       setChecked([]);
                       setIsCheck(false);
-                      console.log(checked);
                     }}
                   >
                     <i class="fas fa-times"></i> Uncheck all
@@ -273,15 +269,12 @@ export function AddRole() {
                   checked={checked}
                   expanded={expanded}
                   onCheck={async (checked, node) => {
-                    console.log("checked", checked);
-                    // console.log("node", node);
                     let arrayChecked = [];
                     await checked.filter((e, i) => {
                       if (e.includes(".")) {
                         arrayChecked.push({ value: e });
                       }
                     });
-                    await console.log("arraynode", arrayChecked);
                     setArrayRoles(arrayChecked);
                     setChecked(checked);
                   }}
@@ -289,7 +282,6 @@ export function AddRole() {
                     setExpanded(expanded);
                   }}
                   onClick={(click) => {
-                    console.log("click", click.path);
                   }}
                   checkModel="all"
                   iconsClass="fa5"

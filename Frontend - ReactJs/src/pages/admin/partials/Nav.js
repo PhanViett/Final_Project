@@ -12,7 +12,6 @@ export default function Nav(props) {
     const dispatch = useDispatch();
     const userInfo = useSelector(
         (state) => state.auth?.user);
-    console.log("log user info", userInfo)
 
     return (
         <nav

@@ -7,7 +7,6 @@ export default function SetupAxios(axios, store) {
       const {
         auth: { access_token },
       } = store.getState();
-      // console.log("Auth", access_token);
       if (access_token) {
         config.headers.Authorization = `Bearer ${access_token}`;
       }
@@ -27,7 +26,6 @@ const responseHandler = (response) => {
 };
 
 const errorHandler = (error) => {
-  console.log("errorHandler", error.response);
   if (error.response.status === 401) {
     localStorage.removeItem("persist:root");
     // window.location = "/admin/login";
