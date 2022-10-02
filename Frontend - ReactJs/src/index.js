@@ -11,8 +11,8 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import SetupAxios from "./configs/SetupAxios";
 import configureStore from "./configureStore";
-import FullPageLoader from "./pages/admin/partials/FullPageLoader";
-import Notifications from "./pages/admin/partials/Notifications";
+import FullPageLoader from "./pages/partials/FullPageLoader";
+import Notifications from "./pages/partials/Notifications";
 import reportWebVitals from "./reportWebVitals";
 import { RootRouteObject } from "./routing/RootRouteObject";
 

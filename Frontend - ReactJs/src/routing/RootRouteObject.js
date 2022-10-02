@@ -4,10 +4,11 @@ import { useRoutes } from "react-router-dom";
 import { LoginPage } from "../pages/admin/auth/LoginPage";
 //admin
 import { UserInfo } from "../pages/admin/auth/UserInfo";
-import { LayoutAdmin } from "../pages/admin/layout";
 import { AddRole } from "../pages/admin/roles/AddRole";
 //error
-import { Page404 } from "../pages/admin/partials/404";
+import { Page404 } from "../pages/partials/404";
+import { HomePage } from "../pages/home/HomePage";
+import { LayoutAdmin } from "../pages/layout";
 
 let routers = [
   {
@@ -20,7 +21,7 @@ let routers = [
     breadcrumb: "Trang chủ",
     element: <LayoutAdmin />,
     children: [
-      // { index: true, element: <ListRoles /> },
+      { index: true, element: <HomePage /> },
       {
         path: "cai-dat-he-thong",
         breadcrumb: "Cài đặt hệ thống",
