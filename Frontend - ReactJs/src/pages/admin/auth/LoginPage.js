@@ -109,7 +109,7 @@ export function LoginPage() {
                   ) : (
                     <span>
                       <i className="fas fa-chevron-circle-right"></i>
-                        &nbsp;&nbsp; Đăng nhập
+                      &nbsp;&nbsp; Đăng nhập
                     </span>
                   )}
                 </button>
@@ -253,7 +253,7 @@ export function LoginPage() {
               <div className="form-group mb-1 text-center">
                 <button
                   className="btn btn-primary btn-block btn-login"
-                  style={{ width: "100%", height: "46px"}}
+                  style={{ width: "100%", height: "46px" }}
                   type="submit"
                   onClick={(e) => {
                   }}
@@ -269,7 +269,7 @@ export function LoginPage() {
                   ) : (
                     <span>
                       <i className="fas fa-chevron-circle-right"></i>
-                        &nbsp; &nbsp; Đăng ký
+                      &nbsp; &nbsp; Đăng ký
                     </span>
                   )}
                 </button>
