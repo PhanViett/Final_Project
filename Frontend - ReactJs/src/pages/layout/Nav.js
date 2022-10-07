@@ -16,10 +16,10 @@ export default function Nav(props) {
     return (
         <nav
             id="nav-admin"
-            className="navbar navbar-expand-lg navbar-light bg-primary p-0"
+            className="navbar navbar-expand-lg navbar-light p-0"
         >
             <div className="container-fluid position-relative">
-                <button style={{ backgroundColor: '#036aab' }}
+                <button style={{ backgroundColor: 'red' }}
                     className="border-0"
                     onClick={handleCollapsedChange}>
                     {!collapsed ? <i className="fas fa-solid fa-outdent text-white"></i> : <i className="fas fa-solid fa-indent text-white"></i>}

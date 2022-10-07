@@ -37,12 +37,12 @@ const Aside = ({ collapsed, toggled, handleToggleSidebar }) => {
           }}
         >
           <NavLink className="" to="/admin">
-            <img alt="" src="/media/Logo_BoYTe.png" width={45} className="d-inline-block align-text-center" />
+            <img alt="" src="/media/Trans_Logo.png" width={45} className="d-inline-block align-text-center" />
             {collapsed ? null : (
               <>
                 <div
                   style={{
-                    backgroundColor: "#025c95",
+                    backgroundColor: "#000",
                     transition: "all .2s ease-out",
                     position: "absolute",
                     top: "1px",
