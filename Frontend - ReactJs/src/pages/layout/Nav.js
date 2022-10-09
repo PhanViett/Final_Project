@@ -19,11 +19,7 @@ export default function Nav(props) {
             className="navbar navbar-expand-lg navbar-light p-0"
         >
             <div className="container-fluid position-relative">
-                <button style={{ backgroundColor: 'red' }}
-                    className="border-0"
-                    onClick={handleCollapsedChange}>
-                    {!collapsed ? <i className="fas fa-solid fa-outdent text-white"></i> : <i className="fas fa-solid fa-indent text-white"></i>}
-                </button>
+                <img alt="" src="/media/Trans_Logo.png" width={45} className="d-inline-block align-text-center" />
 
                 <div className="btn-group">
                     <button
@@ -53,7 +49,6 @@ export default function Nav(props) {
                         >
                             <MdLogout /> Đăng xuất
                         </button>
-
                     </div>
                 </div>
             </div>

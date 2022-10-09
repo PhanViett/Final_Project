@@ -30,22 +30,22 @@ export function LayoutAdmin() {
   return (
     <>
       <div id="main-content" className="position-relative">
-        <Aside
+        {/* <Aside
           collapsed={collapsed}
           toggled={toggled}
           handleToggleSidebar={handleToggleSidebar}
-        />
-        <main>
+        /> */}
 
+        <main>
           <header>
             <Nav
               collapsed={collapsed}
               handleCollapsedChange={handleCollapsedChange}
             />
           </header>
-          <div className="container-fluid">
+          <div className="container-fluid px-0">
             {/* <Breadcrumbs /> */}
-            <div className="px-5 py-4">
+            <div className="px-5 pt-4">
                 <Outlet />
             </div>
           </div>
