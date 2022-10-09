@@ -9,6 +9,9 @@ import { AddRole } from "../pages/admin/roles/AddRole";
 import { Page404 } from "../pages/partials/404";
 import { HomePage } from "../pages/home/HomePage";
 import { LayoutAdmin } from "../pages/layout";
+import { UserMain } from "../pages/admin/users/UserMain";
+import { LayoutMain } from "../pages/layout/main";
+import { NewMain } from "../pages/admin/news/NewMain";
 
 let routers = [
   {
@@ -17,11 +20,35 @@ let routers = [
     children: [{ index: true, element: <LoginPage /> }],
   },
   {
+    path: "/home",
+    element: <LayoutMain />,
+    children: [{ index: true, element: <HomePage /> }],
+  },
+  {
     path: "/admin",
     breadcrumb: "Trang chủ",
     element: <LayoutAdmin />,
     children: [
-      { index: true, element: <HomePage /> },
+      {
+        path: "quan-ly-nguoi-dung",
+        breadcrumb: "Quản lý người dùng",
+        children: [
+          {
+            path: "",
+            element: <UserMain />
+          }
+        ]
+      },
+      {
+        path: "quan-ly-tin-tuc",
+        breadcrumb: "Quản lý tin tức",
+        children: [
+          {
+            path: "",
+            element: <NewMain />
+          }
+        ]
+      },
       {
         path: "cai-dat-he-thong",
         breadcrumb: "Cài đặt hệ thống",
@@ -29,11 +56,6 @@ let routers = [
           {
             path: "vai-tro",
             children: [
-              // {
-              //   path: "",
-              //   breadcrumb: "Vai trò",
-              //   element: <ListRoles />,
-              // },
               {
                 path: "create",
                 element: <AddRole />,

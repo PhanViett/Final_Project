@@ -57,6 +57,22 @@ const Aside = ({ collapsed, toggled, handleToggleSidebar }) => {
 
       <SidebarContent>
         <Menu iconShape="circle">
+          <MenuItem icon={<FaUserCog />}>
+            <NavLink to="quan-ly-nguoi-dung">
+              <button className="dropdown-item text-white" type="button">
+                Quản lý người dùng
+              </button>
+            </NavLink>
+          </MenuItem>
+
+          <MenuItem icon={<FaUserCog />}>
+            <NavLink to="quan-ly-tin-tuc">
+              <button className="dropdown-item text-white" type="button">
+                Quản lý tin tức
+              </button>
+            </NavLink>
+          </MenuItem>
+
           <SubMenu
             icon={<FaCog />}
             title={"Cài đặt hệ thống"}

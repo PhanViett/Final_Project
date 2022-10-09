@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-import Aside from "./Aside";
-import Nav from "./Nav";
-
+import Aside from "../layout/Aside";
+import Nav from "../layout/Nav";
 
 
 export function LayoutAdmin() {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
 
   const handleCollapsedChange = () => {
@@ -18,10 +16,10 @@ export function LayoutAdmin() {
     setToggled(value);
   };
 
-  const isAuthorized = useSelector(
-    (state) => state.auth.isAuthorized,
-    shallowEqual
-  );
+  // const isAuthorized = useSelector(
+  //   (state) => state.auth.isAuthorized,
+  //   shallowEqual
+  // );
 
   // if (!isAuthorized) {
   //   return <Navigate to="/" />;
@@ -30,12 +28,11 @@ export function LayoutAdmin() {
   return (
     <>
       <div id="main-content" className="position-relative">
-        {/* <Aside
+        <Aside
           collapsed={collapsed}
           toggled={toggled}
           handleToggleSidebar={handleToggleSidebar}
-        /> */}
-
+        />
         <main>
           <header>
             <Nav
@@ -43,11 +40,9 @@ export function LayoutAdmin() {
               handleCollapsedChange={handleCollapsedChange}
             />
           </header>
-          <div className="container-fluid px-0">
+          <div className="container-fluid">
             {/* <Breadcrumbs /> */}
-            <div className="px-5 pt-4">
-                <Outlet />
-            </div>
+            <Outlet />
           </div>
         </main>
       </div>
