@@ -5,13 +5,13 @@ import functools
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended import current_user
 from application.models.vai_tro import VaiTro
-from application.models.nhan_vien import NhanVien
+from application.models.user import User
 from application.utils.resource.http_code import HttpCode
 
 
 def convert_to_permission(list_of_permissions_value: List[str]) -> list:
 
-    permissions_list: list = json.load(open('application/permissions.json'))
+    permissions_list: list = json.load(open('application/permissions.json', encoding='utf-8'))
     if len(list_of_permissions_value) <= 0:
         return permissions_list
     category_to_update_index: int = -1
@@ -43,7 +43,7 @@ def permissions_required(permission_field: str, permission_names: List[str] = No
             verify_jwt_in_request()
 
             # GET THE CURRENT USER
-            user: NhanVien = current_user
+            user: User = current_user
 
             # IF USER IS A SUPER ADMIN THEN PERMIT ALL REQUEST
             if user.is_super_admin == True:
@@ -90,7 +90,7 @@ def permissions_required(permission_field: str, permission_names: List[str] = No
     return wrapper
 
 
-def get_user_permissions(nhan_vien: NhanVien):
+def get_user_permissions(nhan_vien: User):
     allowed_permissions = {}
     target_role: VaiTro = nhan_vien.assigned_role
     if not target_role:

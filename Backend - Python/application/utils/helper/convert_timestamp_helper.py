@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from marshmallow import pre_dump, validate, fields
-
+import time
 
 def convert_timestamp(date):
     if isinstance(date, fields.DateTime):
@@ -12,6 +12,15 @@ def convert_timestamp(date):
     millisec = datetime_object.timestamp() * 1000
 
     return int(millisec)
+
+def current_milli_time():
+    return round(time.time() * 1000)
+
+def plus_time(time_day):
+    end_date = datetime.now() + timedelta(days=time_day)
+    millisec = end_date.timestamp() * 1000
+
+    return millisec
 
 
 def convert_milisec(milisec):
