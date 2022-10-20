@@ -9,7 +9,6 @@ from flask import current_app
 
 from application.models import UserModel, PredictModel
 
-
 from alembic import context
 
 # this is the Alembic Config object, which provides
