@@ -1,0 +1,35 @@
+# WARNING: this file is not suitable for production, please use with caution
+version: "3"
+
+services:
+  backend:
+    image: 10.86.144.152:5000/cong-suc-khoe
+    build: .
+    command: uwsgi --http 0.0.0.0:7777 --module application.wsgi:app
+    env_file:
+      - ./.flaskenv
+    environment:
+      - DATABASE_URI=postgresql://postgres:changeme@10.86.144.152:5432/CongSucKhoe
+      - CELERY_RESULT_BACKEND_URL=redis://redis-cong-suc-khoe
+    ports:
+      - "7777:7777"
+    user: ${CURRENT_UID}
+    networks:
+      - internal
+    restart: always
+
+
+
+  redis-cong-suc-khoe:
+    image: redis:alpine
+    ports:
+      - "6555:6379"
+    environment:
+      - vm.overcommit_memory=1
+    networks:
+      - internal
+    restart: always
+
+networks:
+  internal:
+    driver: bridge

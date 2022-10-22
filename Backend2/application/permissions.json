@@ -1,0 +1,32 @@
+[
+  {
+    "value": "nhan_vien_thu_ly",
+    "label": "Người dùng",
+    "children": [
+      {
+        "value": "nhan_vien.create",
+        "type": "create",
+        "label": "Tạo",
+        "checked": false
+      },
+      {
+        "value": "nhan_vien.update",
+        "type": "update",
+        "label": "Cập nhật",
+        "checked": false
+      },
+      {
+        "value": "nhan_vien.get",
+        "type": "get",
+        "label": "Xem",
+        "checked": false
+      },
+      {
+        "value": "nhan_vien.delete",
+        "type": "delete",
+        "label": "Xóa",
+        "checked": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+{
+    "EC01": "Username hoặc mật khẩu không chính xác",
+    "EC02": "Thiếu file request",
+    "EC03": "Trùng dữ liệu nhập vào",
+    "EC04": "Có dữ liệu phụ thuộc vào object",
+    "EC05": "ID sai định dạng (không phải UUID)",
+    "EC06": "Lỗi server",
+    "EC07": "Thiếu data",
+    "EC08": "Lỗi sai định dạng biến",
+    "EC09": "Lỗi khi kiểm tra dữ liệu",
+    "EC10": "Lỗi khi dữ liệu không tồn tại",
+    "EC11": "Vui lòng chọn ngày import",
+    "EC12": "Type không đúng định dạng",
+    "EC13": "Sai định dạng vui lòng format đụng định dạng yyyy/mm/dd hh:mm:ss",
+    "EC14": "Sai sheet name, Vui long doi ten sheet name lai 'Data_NCNC",
+    "EC15": "Thiếu file image",
+    "EC16": "Số tầng không tồn tại",
+    "EC17": "Cấp độ dịch phải thuộc 1,2,3,4"
+}
