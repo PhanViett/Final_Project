@@ -1,29 +1,25 @@
-from flask import request, jsonify, Blueprint, current_app as app
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    jwt_required,
-    get_jwt_identity,
-    get_jwt,
-    current_user as user_jwt,
-)
-from application.models.tai_khoan import TaiKhoan
-from application.models.vai_tro import VaiTro
-from application.utils.helper.role_helper import get_user_permissions
-from application.utils.resource.http_code import HttpCode
-from application.schemas.nhan_vien import NhanVienSchema
+import json
+import os
+from datetime import timedelta
+import redis
+from application.controllers.auth.helpers import (add_token_to_database,
+                                                  is_token_revoked,
+                                                  revoke_token)
+from application.extensions import apispec, db, jwt, pwd_context
 
 from application.models import Users
-from application.extensions import pwd_context, jwt, apispec, db
-from application.controllers.auth.helpers import (
-    revoke_token,
-    is_token_revoked,
-    add_token_to_database,
-)
-import redis
-from datetime import datetime, timedelta
-import os
-import json
+from application.models.tai_khoan import TaiKhoan
+from application.models.vai_tro import VaiTro
+from application.schemas.nhan_vien import NhanVienSchema
+from application.utils.helper.convert_timestamp_helper import get_current_time
+from application.utils.helper.role_helper import get_user_permissions
+from application.utils.resource.http_code import HttpCode
+from flask import Blueprint
+from flask import current_app as app
+from flask import jsonify, request
+from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import current_user as user_jwt
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 
 ACCESS_EXPIRES = timedelta(days=365)
 
@@ -67,16 +63,15 @@ def login():
     #  todo APPLY TOKEN
     access_token = create_access_token(identity=str(target.id), additional_claims={"account_type": tai_khoan.type})
     refresh_token = create_refresh_token(identity=str(target.id), additional_claims={"account_type": tai_khoan.type})
-    add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
-    add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
+    # add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
+    # add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
 
     user_data: dict = schema.dump(target)
     user_data["tai_khoan"] = username
 
-    tai_khoan.last_login_at = datetime.now()
+    tai_khoan.last_login_at = get_current_time("int")
     db.session.commit()
     ret = {
-        "msg": "Đăng nhập thành công",
         "access_token": access_token,
         "refresh_token": refresh_token,
         "userInfo": user_data,
@@ -94,26 +89,21 @@ def register():
     email = request.json.get('email')
     dien_thoai = request.json.get('dien_thoai')
 
-
     if tai_khoan is None or tai_khoan == '':
         return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Tài khoản không hợp lệ!"}), HttpCode.BadRequest
-
     if mat_khau is None or mat_khau.strip() == '':
         return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Mật khẩu không hợp lệ!"}), HttpCode.BadRequest
-
     
     is_exist = TaiKhoan.query.filter(TaiKhoan.tai_khoan == tai_khoan).first()
-    print("===================>", is_exist)
+
     if is_exist is not None:
         return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Tài khoản đã tồn tại!"}), HttpCode.BadRequest
 
     tai_khoan = TaiKhoan(tai_khoan=tai_khoan, mat_khau=mat_khau, dien_thoai=dien_thoai)
-
     db.session.add(tai_khoan)
     db.session.commit()
 
-    user = Users(tai_khoan_id = tai_khoan.id, dien_thoai=dien_thoai, ho=ho, ten=ten, email=email)
-
+    user = Users(tai_khoan_id = tai_khoan.id, dien_thoai=dien_thoai, ho=ho, ten=ten, email=email, vai_tro_id="6c167d69-c1d7-4beb-a023-57bc8fc95fbb")
     db.session.add(user)
     db.session.commit()
 
@@ -123,31 +113,13 @@ def register():
             }, HttpCode.Created
 
 
+
+
+
+
 @blueprint.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
-    """Get an access token from a refresh token
-    ---
-    post:
-      tags:
-        - auth
-      summary: Get an access token
-      description: Get an access token by using a refresh token in the `Authorization` header
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                    example: myaccesstoken
-        400:
-          description: bad request
-        401:
-          description: unauthorized
-    """
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
     ret = {"access_token": access_token}
@@ -158,29 +130,6 @@ def refresh():
 @blueprint.route("/revoke-access", methods=["DELETE"])
 @jwt_required()
 def revoke_access_token():
-    """Revoke an access token
-
-    ---
-    delete:
-      tags:
-        - auth
-      summary: Revoke an access token
-      description: Revoke an access token
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: token revoked
-        400:
-          description: bad request
-        401:
-          description: unauthorized
-    """
     jti = get_jwt()["jti"]
     user_identity = get_jwt_identity()
     revoke_token(jti, user_identity)
@@ -190,29 +139,6 @@ def revoke_access_token():
 @blueprint.route("/revoke-refresh", methods=["DELETE"])
 @jwt_required(refresh=True)
 def revoke_refresh_token():
-    """Revoke a refresh token, used mainly for logout
-
-    ---
-    delete:
-      tags:
-        - auth
-      summary: Revoke a refresh token
-      description: Revoke a refresh token, used mainly for logout
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: token revoked
-        400:
-          description: bad request
-        401:
-          description: unauthorized
-    """
     jti = get_jwt()["jti"]
     jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
     return jsonify({"message": "token revoked"}), HttpCode.OK
@@ -221,38 +147,6 @@ def revoke_refresh_token():
 @blueprint.route("/change-password", methods=["PUT"])
 @jwt_required()
 def change_password():
-    """Change Password
-
-    ---
-     put:
-        tags:
-          - auth
-        summary: Change Password
-        description: Change password for nhan_vien
-        requestBody:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  old_password:
-                    type: string
-                    example: P4$$w0rd!
-                    required: true
-                  new_password:
-                    type: string
-                    example: PaSsW0rD@
-                    required: true
-                  retype_password:
-                    type: string
-                    example: PaSsW0rD@
-                    required: true
-        responses:
-          200:
-            description: change password successfully
-          400:
-            description: bad request
-    """
     method_decorators = [jwt_required()]
     password = user_jwt.assigned_account.mat_khau
     old_password = request.json.get("old_password", None)
@@ -278,7 +172,7 @@ def change_password():
 @jwt.user_lookup_loader
 def user_loader_callback(jwt_headers, jwt_payload):
     identity = jwt_payload["sub"]
-    return NhanVien.query.get(identity)
+    return Users.query.get(identity)
 
 
 @jwt.token_in_blocklist_loader

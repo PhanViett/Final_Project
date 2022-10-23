@@ -1,4 +1,4 @@
-from application.controllers.nhan_vien.resources.user import UserResource, UserList, UserInform, UserSearch
+from application.controllers.nhan_vien.resources.user import QuanLyNguoiDungGetList
 
 
-__all__ = ["UserResource", "UserList", "UserInform", "UserSearch"]
+__all__ = ["QuanLyNguoiDungGetList"]

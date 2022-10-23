@@ -14,7 +14,7 @@ class TaiKhoan(db.Model):
     mat_khau = db.Column(db.String(), nullable=False)
     dien_thoai = db.Column(db.String(12), nullable=True)
     type = db.Column(db.SmallInteger, nullable=True, default=0)  # ! 0 : User ; 1 : Co So
-    last_login_at = db.Column(db.TIMESTAMP, nullable=True)
+    last_login_at = db.Column(db.BigInteger, nullable=True)
     created_at = db.Column(db.BigInteger, nullable=True)
     updated_at = db.Column(db.BigInteger, nullable=True)
 
