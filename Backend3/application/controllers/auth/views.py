@@ -3,7 +3,6 @@ import os
 from datetime import timedelta
 import redis
 from application.controllers.auth.helpers import (add_token_to_database,
-                                                  is_token_revoked,
                                                   revoke_token)
 from application.extensions import apispec, db, jwt, pwd_context
 
@@ -12,7 +11,6 @@ from application.models.tai_khoan import TaiKhoan
 from application.models.vai_tro import VaiTro
 from application.schemas.nhan_vien import NhanVienSchema
 from application.utils.helper.convert_timestamp_helper import get_current_time
-from application.utils.helper.role_helper import get_user_permissions
 from application.utils.resource.http_code import HttpCode
 from flask import Blueprint
 from flask import current_app as app
@@ -23,7 +21,7 @@ from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 
 ACCESS_EXPIRES = timedelta(days=365)
 
-blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+blueprint = Blueprint("auth", __name__, url_prefix="")
 
 jwt_redis_blocklist = redis.StrictRedis(
     host=os.getenv("REDIS_HOST"),
@@ -63,8 +61,8 @@ def login():
     #  todo APPLY TOKEN
     access_token = create_access_token(identity=str(target.id), additional_claims={"account_type": tai_khoan.type})
     refresh_token = create_refresh_token(identity=str(target.id), additional_claims={"account_type": tai_khoan.type})
-    # add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
-    # add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
+    add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
+    add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
 
     user_data: dict = schema.dump(target)
     user_data["tai_khoan"] = username
@@ -74,7 +72,7 @@ def login():
     ret = {
         "access_token": access_token,
         "refresh_token": refresh_token,
-        "userInfo": user_data,
+        "data": user_data,
     }
     return ret, HttpCode.OK
 
@@ -90,31 +88,38 @@ def register():
     dien_thoai = request.json.get('dien_thoai')
 
     if tai_khoan is None or tai_khoan == '':
-        return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Tài khoản không hợp lệ!"}), HttpCode.BadRequest
+        return jsonify({"status": "FAILED", "msg": "Tài khoản không hợp lệ!"}), HttpCode.BadRequest
     if mat_khau is None or mat_khau.strip() == '':
-        return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Mật khẩu không hợp lệ!"}), HttpCode.BadRequest
+        return jsonify({"status": "FAILED", "msg": "Mật khẩu không hợp lệ!"}), HttpCode.BadRequest
     
     is_exist = TaiKhoan.query.filter(TaiKhoan.tai_khoan == tai_khoan).first()
 
     if is_exist is not None:
-        return jsonify({"error_code": "REGISTER_FAILED", "error_message": "Tài khoản đã tồn tại!"}), HttpCode.BadRequest
+        return jsonify({"status": "FAILED", "msg": "Tài khoản đã tồn tại!"}), HttpCode.BadRequest
 
     tai_khoan = TaiKhoan(tai_khoan=tai_khoan, mat_khau=mat_khau, dien_thoai=dien_thoai)
     db.session.add(tai_khoan)
     db.session.commit()
+    
+    vai_tro = VaiTro.query.filter(VaiTro.id == "6c167d69-c1d7-4beb-a023-57bc8fc95fbb").first()
 
     user = Users(tai_khoan_id = tai_khoan.id, dien_thoai=dien_thoai, ho=ho, ten=ten, email=email, vai_tro_id="6c167d69-c1d7-4beb-a023-57bc8fc95fbb")
+    if vai_tro is not None:
+        user.assigned_role.append(vai_tro)
     db.session.add(user)
-    db.session.commit()
+    db.session.commit()    
 
-    return {
-            "msg": "Tạo mới người dùng thành công", 
-            # "nguoi_dung": schema.dump(user)
+    return {"status": "SUCCESS",
+            "msg": "Đăng ký thành công", 
             }, HttpCode.Created
 
 
-
-
+@blueprint.route("/get_current_user", methods=["POST"])
+@jwt_required()
+def get_current_user():
+    schema = NhanVienSchema()
+    user = Users.query.filter(Users.id == user_jwt.id).first()
+    return schema.dump(user)
 
 
 @blueprint.route("/refresh", methods=["POST"])

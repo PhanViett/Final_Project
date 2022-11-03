@@ -1,0 +1,30 @@
+.custom-control-input {
+    position: absolute;
+    left: 0;
+    z-index: -1;
+    width: 1rem;
+    height: 1.175rem;
+    opacity: 0;
+}
+.custom-control {
+    position: relative;
+    z-index: 1;
+    display: block;
+    min-height: 1.35rem;
+    padding-left: 1.5rem;
+}
+.custom-control-label {
+    position: relative;
+    margin-bottom: 0;
+    vertical-align: top;
+}
+
+// DesktopDatePicker
+.MuiFormControl-root {
+    width: 100%;
+    display: block;
+}
+.MuiOutlinedInput-root {
+    display: block;
+    height: 38px;
+}

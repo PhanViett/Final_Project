@@ -1,0 +1,55 @@
+#kt_header {
+  .menu-sub {
+    .menu-item {
+      .menu-link {
+        display: flex;
+        .menu-icon {
+          color: black;
+
+          i {
+            color: black;
+          }
+
+          svg {
+            color: black;
+          }
+        }
+        .menu-title {
+          margin-top: 0;
+          color: black;
+        }
+      }
+    }
+  }
+
+  .menu-item {
+    .menu-link {
+      display: block;
+      background-color: transparent;
+
+      .menu-icon {
+        margin: auto;
+        color: white;
+        i {
+          color: white;
+          font-size: 30px !important;
+        }
+
+        svg {
+          color: white;
+        }
+      }
+
+      .menu-title {
+        color: white;
+        margin-top: 5px;
+        font-weight: 400 !important;
+      }
+    }
+  }
+  #topbar {
+    img {
+      border-radius: 1.475rem !important;
+    }
+  }
+}

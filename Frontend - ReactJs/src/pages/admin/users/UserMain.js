@@ -1,18 +1,33 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Oval } from "react-loader-spinner";
 import { conditionalRowStyles, customStyles, handlePerRowsChange, paginationOptions } from "../../../assets/customStyles/stylesTable";
+import api from "../../../configs/api";
 
 export function UserMain () {
 
     const [isLoading, setIsLoading] = useState(false);
     const [totalRows, setTotalRows] = useState(0);
 
+    useEffect(() => {
+        getList();
+    },[])
 
     const handlePageChange = async (page) => {
         // await setPage(page);
         // getList({ page_number: page });
     };
+
+    const getList = () => {
+        axios
+        .post(api.API_QUAN_LY_NGUOI_DUNG, {})
+        .then((data) => {
+            if (data) {
+                console.log(data);
+            }
+        } )
+    }
 
 
 

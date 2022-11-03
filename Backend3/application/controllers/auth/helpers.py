@@ -45,7 +45,7 @@ def add_token_to_database(encoded_token, identity_claim):
         "revoked": revoked,
     }
 
-    jwt_redis_blocklist.set(jti, json.dumps(dbRedis, cls=DateTimeEncoder))
+    jwt_redis_blocklist.set("token:"+jti, json.dumps(dbRedis, cls=DateTimeEncoder))
 
     # db_token = TokenBlocklist(
     #     jti=jti,

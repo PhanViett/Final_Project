@@ -1,7 +1,7 @@
-from enum import unique
+from marshmallow import fields
 from application.models import Users
 from application.extensions import ma, db
-from marshmallow import fields
+from application.schemas.vai_tro import VaiTroSchema
 
 
 class NhanVienSchema(ma.SQLAlchemyAutoSchema):
@@ -10,6 +10,7 @@ class NhanVienSchema(ma.SQLAlchemyAutoSchema):
     email = fields.Email()
     vai_tro_id = ma.auto_field()
     tai_khoan_id = ma.auto_field(load_only=True)
+    assigned_role = ma.Nested(VaiTroSchema, many=True)
 
     class Meta:
         model = Users

@@ -1,0 +1,21 @@
+//
+// Container
+//
+
+// Desktop Mode
+@include media-breakpoint-up(lg) {
+  // Containers
+  .container-custom {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// Tablet & mobile modes
+@include media-breakpoint-down(lg) {
+  .container-custom {
+    max-width: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

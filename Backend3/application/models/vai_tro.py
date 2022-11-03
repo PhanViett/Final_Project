@@ -11,6 +11,7 @@ from flask_jwt_extended import current_user
 
 from application.models.nhan_vien import Users
 from application.utils.helper.string_processing_helper import clean_string
+from application.utils.helper.convert_timestamp_helper import get_current_time
 
 
 class VaiTro(db.Model):
@@ -25,17 +26,9 @@ class VaiTro(db.Model):
     updated_at = db.Column(db.BigInteger, nullable=True)
     deleted_at = db.Column(db.BigInteger, nullable=True)
 
-    def __repr__(self) -> str:
-        return f"<Role {self.name}>"
-
-    def __init__(self,  ten: str = None,
-                 vai_tro: str = None) -> None:
+    def __init__(self,  ten: str = None) -> None:
         self.ten = ten
-        self.vai_tro = vai_tro
         self.ten_en = clean_string(ten)
-
-    def __str__(self) -> String:
-        return f"id={self.id}, name={self.ten}, permission={self.vai_tro}, description={self.mo_ta}"
 
 # TRIGGERS
 

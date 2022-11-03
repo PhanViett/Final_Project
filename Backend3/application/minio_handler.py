@@ -24,7 +24,7 @@ class MinioHandler:
         self.minio_url = os.getenv("MINIO_URL")
         self.access_key = os.getenv("MINIO_ACCESS_KEY")
         self.secret_key = os.getenv("MINIO_SECRET_KEY")
-        self.bucket_name = ["congsuckhoe", "unit"]
+        self.bucket_name = {"bucket": os.getenv("MINIO_BUCKET_NAME")}
         self.client = Minio(
             self.minio_url,
             access_key=self.access_key,
@@ -219,7 +219,6 @@ class MinioHandler:
                 data=file_data,
                 length=length,
                 part_size=10 * 1024 * 1024,
-                progress=Progress(),
             )
 
             return result.bucket_name + result.object_name

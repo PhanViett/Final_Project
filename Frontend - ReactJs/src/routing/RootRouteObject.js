@@ -31,7 +31,7 @@ let routers = [
     children: [
       {
         path: "quan-ly-nguoi-dung",
-        breadcrumb: "Quản lý người dùngg",
+        breadcrumb: "Quản lý người dùng",
         children: [
           {
             path: "",

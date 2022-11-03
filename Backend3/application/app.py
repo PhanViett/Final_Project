@@ -2,6 +2,7 @@ from flask import Flask, request
 from application.controllers import (
     nhan_vien,
     auth,
+    records,
     vai_tro
 )
 
@@ -114,6 +115,7 @@ def register_blueprints(app):
     app.register_blueprint(auth.views.blueprint)
     app.register_blueprint(nhan_vien.views.blueprint)
     app.register_blueprint(vai_tro.views.blueprint)
+    app.register_blueprint(records.views.blueprint)
 
 
 

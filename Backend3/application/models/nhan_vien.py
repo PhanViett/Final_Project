@@ -16,6 +16,11 @@ from application.utils.helper.convert_timestamp_helper import get_current_time
 class Users(db.Model):
     __tablename__ = "users"
 
+    lk_vai_tro_nhan_vien = db.Table(
+    "lk_vai_tro_nhan_vien", db.Model.metadata,
+        db.Column("vai_tro_id", UUID(as_uuid=True),  db.ForeignKey('vai_tro.id'), primary_key=True),
+        db.Column("user_id", UUID(as_uuid=True),  db.ForeignKey('users.id'), primary_key=True))
+
     created_at = db.Column(db.BigInteger, nullable=True)
     updated_at = db.Column(db.BigInteger, nullable=True)
     deactive_at = db.Column(db.BigInteger, nullable=True)
@@ -43,7 +48,8 @@ class Users(db.Model):
     # quan_huyen_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
     # xa_phuong_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
 
-    assigned_role = db.relationship("VaiTro",  lazy="subquery", backref=db.backref("nhan_vien", lazy=True))	
+    assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien",
+                                    cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))    
     tai_khoan_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tai_khoan.id"), nullable=True)
     password = db.Column(db.String, nullable=True)
     active = db.Column(db.Boolean, default=True, nullable=False)

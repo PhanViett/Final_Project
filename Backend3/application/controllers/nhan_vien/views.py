@@ -11,7 +11,7 @@ api = Api(blueprint)
 
 @blueprint.before_app_first_request
 def register_views():
-    api.add_resource(QuanLyNguoiDungGetList, "/user_get_list", endpoint="user_get_list")
+    api.add_resource(QuanLyNguoiDungGetList, "/user-get-list", endpoint="user-get-list")
 
 
 

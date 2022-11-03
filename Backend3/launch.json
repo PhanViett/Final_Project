@@ -4,7 +4,7 @@
     "request": "launch",
     "module": "flask",
     "env": {
-        "FLASK_APP": "app.py",
+        "FLASK_APP": "application.app:create_app",
         "FLASK_ENV": "development",
         "FLASK_DEBUG": "0"
     },
@@ -14,4 +14,4 @@
         "--no-reload"
     ],
     "jinja": true
-},
+}

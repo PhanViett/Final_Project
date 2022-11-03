@@ -1,0 +1,23 @@
+//
+// Theme style
+//
+
+// Mode
+$mode: default;
+
+// Initialize
+@import "init";
+// @import url(./colors.scss);
+
+// Components
+@import "./core/components/components";
+@import "components/components";
+
+// Layout
+@import "layout/layout";
+@import "./core/layout/docs/layout";
+
+//admin
+@import "layout/admin/danhsachhoso";
+
+@import "@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css";

@@ -1,0 +1,10 @@
+#kt_content_container {
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+// DROPDOWN BUTTON
+.btn.btn-link.dropdown-toggle:after {
+    display: none;
+}
