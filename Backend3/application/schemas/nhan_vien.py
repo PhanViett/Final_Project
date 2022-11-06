@@ -18,6 +18,18 @@ class NhanVienSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         exclude = ("created_at", "updated_at", "deleted_at")
 
+class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
+    id = ma.auto_field(dump_only=True)
+    ho = ma.auto_field(load_only=True)
+    ten = ma.auto_field(load_only=True)
+    email = ma.auto_field(load_only=True)
+    dien_thoai = ma.auto_field(load_only=True)
+
+    class Meta:
+        model = Users
+        sqla_session = db.session
+        load_instance = True
+        exclude = ("created_at", "updated_at", "deleted_at")
 
 class NguoiDungDisplaySchema(ma.SQLAlchemySchema):
     id = fields.String(dump_only=True)

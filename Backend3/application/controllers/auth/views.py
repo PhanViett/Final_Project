@@ -99,20 +99,27 @@ def register():
 
     tai_khoan = TaiKhoan(tai_khoan=tai_khoan, mat_khau=mat_khau, dien_thoai=dien_thoai)
     db.session.add(tai_khoan)
-    db.session.commit()
     
-    vai_tro = VaiTro.query.filter(VaiTro.id == "6c167d69-c1d7-4beb-a023-57bc8fc95fbb").first()
 
-    user = Users(tai_khoan_id = tai_khoan.id, dien_thoai=dien_thoai, ho=ho, ten=ten, email=email, vai_tro_id="6c167d69-c1d7-4beb-a023-57bc8fc95fbb")
+    vai_tro = VaiTro.query.filter(VaiTro.ten_en == "user").first()
+    user = Users(tai_khoan_id = tai_khoan.id, dien_thoai=dien_thoai, ho=ho, ten=ten, email=email)
     if vai_tro is not None:
+        user.vai_tro_id = vai_tro.id
         user.assigned_role.append(vai_tro)
     db.session.add(user)
+
+
     db.session.commit()    
 
     return {"status": "SUCCESS",
             "msg": "Đăng ký thành công", 
             }, HttpCode.Created
 
+@blueprint.route("/menu", methods=["POST"])
+@jwt_required()
+def menu():
+    role = user_jwt.assigned_role[0].ten_en
+    return "<button><i class='fas fa-eye'></i></button>"
 
 @blueprint.route("/get_current_user", methods=["POST"])
 @jwt_required()

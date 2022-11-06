@@ -10,6 +10,7 @@ class TaiKhoan(db.Model):
     __tablename__ = "tai_khoan"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True)
     tai_khoan = db.Column(db.String(), nullable=False, unique=True)
     mat_khau = db.Column(db.String(), nullable=False)
     dien_thoai = db.Column(db.String(12), nullable=True)
@@ -18,8 +19,9 @@ class TaiKhoan(db.Model):
     created_at = db.Column(db.BigInteger, nullable=True)
     updated_at = db.Column(db.BigInteger, nullable=True)
 
-    def __init__(self, tai_khoan=None, mat_khau=None, dien_thoai=None, type=None) -> None:
+    def __init__(self, user_id=None, tai_khoan=None, mat_khau=None, dien_thoai=None, type=None) -> None:
         self.id = uuid.uuid4()
+        self.user_id = user_id
         self.tai_khoan = tai_khoan
         self.mat_khau = pwd_context.hash(mat_khau)
         self.dien_thoai = dien_thoai

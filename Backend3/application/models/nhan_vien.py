@@ -13,13 +13,13 @@ from sqlalchemy.dialects.postgresql import JSONB, TEXT
 from application.utils.helper.string_processing_helper import clean_string
 from application.utils.helper.convert_timestamp_helper import get_current_time
 
+lk_vai_tro_nhan_vien = db.Table(
+"lk_vai_tro_nhan_vien", db.Model.metadata,
+    db.Column("vai_tro_id", UUID(as_uuid=True),  db.ForeignKey('vai_tro.id'), primary_key=True),
+    db.Column("user_id", UUID(as_uuid=True),  db.ForeignKey('users.id'), primary_key=True))
+
 class Users(db.Model):
     __tablename__ = "users"
-
-    lk_vai_tro_nhan_vien = db.Table(
-    "lk_vai_tro_nhan_vien", db.Model.metadata,
-        db.Column("vai_tro_id", UUID(as_uuid=True),  db.ForeignKey('vai_tro.id'), primary_key=True),
-        db.Column("user_id", UUID(as_uuid=True),  db.ForeignKey('users.id'), primary_key=True))
 
     created_at = db.Column(db.BigInteger, nullable=True)
     updated_at = db.Column(db.BigInteger, nullable=True)
@@ -54,7 +54,8 @@ class Users(db.Model):
     password = db.Column(db.String, nullable=True)
     active = db.Column(db.Boolean, default=True, nullable=False)
     vai_tro_id = db.Column(UUID(as_uuid=True), db.ForeignKey("vai_tro.id"), nullable=True)
-
+    
+    records = db.relationship("Records", foreign_keys="Records.user_id", back_populates="users", uselist=False)
 
 
     def __repr__(self):

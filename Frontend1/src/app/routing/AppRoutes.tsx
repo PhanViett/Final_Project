@@ -17,7 +17,6 @@ const { PUBLIC_URL } = process.env;
 
 const AppRoutes: FC = () => {
   const currentUser = useSelector(selectCurrentUser);
-  console.log(currentUser);
   return (
     <BrowserRouter basename={PUBLIC_URL}>
       <Routes>

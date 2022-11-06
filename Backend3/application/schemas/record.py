@@ -5,6 +5,7 @@ from application.models.record import Records
 
 class RecordSchema(ma.SQLAlchemySchema):
     id = fields.String(dump_only=True)
+    ho_ten = fields.String(attribute="users.ho_ten", dump_only=True)
     tuoi = fields.String(dump_only=True)
     gioi_tinh = fields.String(dump_only=True)
     height = fields.String(dump_only=True)
@@ -21,4 +22,3 @@ class RecordSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Records
         sqla_session = db.session
-        load_instance = True

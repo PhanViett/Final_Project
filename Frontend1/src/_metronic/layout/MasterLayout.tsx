@@ -1,14 +1,12 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
-import { HeaderWrapper } from "./components/header/HeaderWrapper";
-import { Toolbar } from "./components/toolbar/Toolbar";
-import { ScrollTop } from "./components/ScrollTop";
-import { Content } from "./components/Content";
-import { PageDataProvider } from "./core";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { MenuComponent } from "../assets/ts/components";
+import { Content } from "./components/Content";
+import { ScrollTop } from "./components/ScrollTop";
+import { PageDataProvider } from "./core";
 
 const MasterLayout = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
     setTimeout(() => {
@@ -24,40 +22,36 @@ const MasterLayout = () => {
 
   return (
     <PageDataProvider>
-      {/* <div className="page d-flex flex-row flex-column-fluid">
-        <div
-          className="wrapper d-flex flex-column flex-row-fluid"
-          id="kt_wrapper"
-        >
-          <HeaderWrapper />
+      <div id="main" className="main">
 
-          <div
-            id="kt_content"
-            className="content d-flex flex-column flex-column-fluid"
-          >
-            <Toolbar />
-            <div className="post d-flex flex-column-fluid" id="kt_post">
-              <Content>
-                <Outlet/>
-              </Content>
+        <div className="topnav">
+
+        </div>
+        <div>
+          <div className="sidenav text-center">
+            <div className="menu-item">
+              <button className="btn btn-link" onClick={() => navigate("/home")} title="Trang chủ"><i className="fas fa-home ms-1"></i></button><br />
+              <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-nguoi-dung")} title="Quản lý người dùng"><i className="fas fa-users ms-1"></i></button><br />
+              <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-lich-su")} title="Quản lý lịch sử"><i className="fas fa-notes-medical ms-1"></i></button><br />
+              <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-tin-tuc")} title="Quản lý tin tức"><i className="fas fa-newspaper ms-1"></i></button><br />
+              {/* <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-tai-khoan")} title="Quản lý tài khoản"><i className="fas fa-user-circle ms-1"></i></button><br /> */}
             </div>
+
+            <div className="logout">
+              <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-tai-khoan")} title="Đăng xuất"><i className="fas fa-sign-out-alt ms-1"></i></button><br />
+            </div>
+          </div>  
+          <div className="content">
+            <Content>
+              <Outlet></Outlet>
+            </Content>
           </div>
         </div>
-      </div> */}
-
-      <div className="page">
-        <div className="row">
-          <div className="col-6" style={{backgroundColor: 'red'}}>
-            <h2 style={{color: "white"}}>SADdla;fksdfd</h2>
-          </div>
-        </div>
-      </div>  
-
-      {/* begin:: Modals */}
-      {/* end:: Modals */}
+      </div>
       <ScrollTop />
     </PageDataProvider>
   );
 };
 
 export { MasterLayout };
+

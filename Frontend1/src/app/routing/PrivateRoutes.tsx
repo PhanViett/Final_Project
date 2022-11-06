@@ -6,7 +6,11 @@ import { getCSSVariableValue } from "../../_metronic/assets/ts/_utils";
 import { MasterLayout } from "../../_metronic/layout/MasterLayout";
 
 import { selectRoleUser } from "../../app/redux-module/auth/authSlice";
+
+
+
 import { QuanLyNguoiDung } from "../modules/apps/admin/quan-ly-nguoi-dung/QuanLyNguoiDung";
+import { QuanLyLichSu } from "../modules/apps/admin/quan-ly-lich-su/QuanLyLichSu";
 
 const PrivateRoutes = () => {
     const roleUser = useSelector(selectRoleUser);
@@ -26,7 +30,7 @@ const PrivateRoutes = () => {
                 : null}
 
                 <Route path="admin/quan-ly-nguoi-dung" element={<QuanLyNguoiDung />} />
-
+                <Route path="admin/quan-ly-lich-su" element={<QuanLyLichSu />} />
                 {/* Page Not Found */}
                 <Route path="*" element={<Navigate to="/error/404" />} />
 

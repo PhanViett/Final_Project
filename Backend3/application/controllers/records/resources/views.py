@@ -1,10 +1,11 @@
-from flask import request
-from flask_restful import Resource
-from flask_jwt_extended import jwt_required
-from application.models.record import Records
 from application.commons.pagination import paginate
+from application.extensions import db
+from application.models.record import Records
 from application.schemas.record import RecordSchema
 from application.utils.resource.http_code import HttpCode
+from flask import jsonify, request
+from flask_jwt_extended import jwt_required, current_user
+from flask_restful import Resource
 
 
 class RecordGetList(Resource):
@@ -34,16 +35,47 @@ class RecordGetList(Resource):
         return res, HttpCode.OK
 
 
+class RecordCreate(Resource):
+    @jwt_required()
+    def post(self):
+        schema = RecordSchema()
 
-# class QuanLyNguoiDungPost(Resource):
-#     @ jwt_required()
-#     def post(self):
-#         data = request.json
+        req = {
+            "tuoi": request.json.get("tuoi"),
+            "gioi_tinh": request.json.get("gioi_tinh"),
+            "height": request.json.get("height"),
+            "weight": request.json.get("weight"),
+            "ap_hi": request.json.get("ap_hi"),
+            "ap_lo": request.json.get("ap_lo"),
+            "chol": request.json.get("chol"),
+            "gluc": request.json.get("gluc"),
+            "smoke": request.json.get("smoke"),
+            "alco": request.json.get("alco"),
+            "active": request.json.get("active"),
+            "result": request.json.get("result")
+        }
+
+        record = Records( tuoi=req["tuoi"], gioi_tinh=req["gioi_tinh"], height=req["height"], 
+                          weight=req["weight"], ap_hi=req["ap_hi"], ap_lo=req["ap_lo"], 
+                          chol=req["chol"], gluc=req["gluc"], smoke=req["smoke"], alco=req["alco"], 
+                          active=req["active"], result=req["result"])
         
-#         exist_tai_khoan = TaiKhoan.query.filter(TaiKhoan.tai_khoan.like(data["tai_khoan"])).first()
-#         if exist_tai_khoan:
-#             return {
-#                 "msg": "Tên đăng nhập đã tồn tại"
-#             }, HttpCode.BadRequest
+        record.user_id = current_user.id
+
+        db.session.add(record)
+        db.session.commit()
         
+        return jsonify({"status": "SUCCESS", "msg": "Thông tin chẩn đoán được lưu trữ thành công"})
+
+
+class RecordDelete(Resource):
+    def delete(self, id):
+        record = Records.query.filter(Records.id == id).first()
+
+        if record is None:
+            return jsonify({"status": "FAILED", "msg": "Thông tin chẩn đoán không tồn tại trong hệ thống"}), HttpCode.BadRequest
         
+        db.session.delete(record)
+        db.session.commit()
+
+        return {"msg": "Xóa thông tin chẩn đoán thành công!"}, HttpCode.OK

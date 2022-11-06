@@ -26,6 +26,7 @@ class Records(db.Model):
     active = db.Column(db.BigInteger, nullable=True)
     result = db.Column(db.BigInteger, nullable=True)
 
+    users = db.relationship("Users", foreign_keys=[user_id], back_populates="records", lazy="joined", uselist=False)
 
 
     def __init__(self, user_id=None, tuoi=None, gioi_tinh=None, height=None,

@@ -18,6 +18,8 @@ export default {
     API_XA_PHUONG_PUBLIC: API_URL + PATH_V1 + "public/xa-phuong",
 
     // QUAN LY NGUOI DUNG
-    API_QUAN_LY_NGUOI_DUNG: API_URL + PATH_V1 + "user-get-list"
+    API_QUAN_LY_NGUOI_DUNG: API_URL + PATH_V1 + "user-get-list",
 
+    // QUAN LY LICH SU
+    API_QUAN_LY_LICH_SU: API_URL + PATH_V1 + "record-get-list",
 };

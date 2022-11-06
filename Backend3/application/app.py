@@ -34,7 +34,7 @@ def create_app(testing=False):
     #     environment="dev",
     # )
 
-    CORS(app)
+    CORS(app, support_credentials=True)
     app.config.from_object("application.config")
 
     if testing is True:

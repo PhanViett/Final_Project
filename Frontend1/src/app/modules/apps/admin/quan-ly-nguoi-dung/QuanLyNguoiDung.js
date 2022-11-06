@@ -1,52 +1,71 @@
 import axios from "axios";
-import api from "../../../../configs/api";
 import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../../_metronic/assets/custom/table";
 import { Oval } from "react-loader-spinner";
+import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../../_metronic/assets/custom/table";
+import { useDebounce } from "../../../../../_metronic/helpers";
+import api from "../../../../configs/api";
 
 
-export function QuanLyNguoiDung () {
+export function QuanLyNguoiDung() {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(1);
     const [totalRows, setTotalRows] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [form, setForm] = useState({});
+    const [errors, setErrors] = useState({});
+    const [searchKey, setSearchKey] = useState("");
+
+    const [status, setStatus] = useState("Tạo mới");
+    const [nguoiDungList, setNguoiDungList] = useState({});
+
+    const debouncedSearchKey = useDebounce(searchKey, 1000);
+
 
     useEffect(() => {
-        getList();
-    }, [])
+        if (debouncedSearchKey !== undefined && searchKey !== undefined) {
+            getList(1, perPage, debouncedSearchKey);
+        }
+    },
+        [debouncedSearchKey]
+    );
 
-    const handlePageChange = async (page) => {
-        // await setPage(page);
-        // getList({ page_number: page });
-    };
-
-    const getList = () => {
+    const getList = (page_number = page, size = perPage, search_key = searchKey) => {
         axios
-            .post(api.API_QUAN_LY_NGUOI_DUNG, {})
-            .then((data) => {
+            .post(api.API_QUAN_LY_NGUOI_DUNG + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
+            .then(({ data }) => {
                 if (data) {
-                    console.log(data);
+                    setNguoiDungList(data?.results)
                 }
             })
     }
 
+    const handlePageChange = (page) => {
+        setPage(page);
+        getList({ page_number: page });
+    };
+
+    const handlePerRowsChange = async (newPerPage, page) => {
+        axios
+            .post(api.API_QUAN_LY_NGUOI_DUNG, {})
+            .then(({ data }) => {
+                if (data) {
+                    setNguoiDungList(data?.results);
+                    setPerPage(newPerPage);
+                }
+            })
+            .catch(() => { })
+            .finally(() => {
+            });
+    };
 
     const columns = [
         {
-            name: "STT",
-            grow: 3,
-            selector: (row) => (<span>{row.ma_chuyen_mon}</span>),
-            style: {
-                color: "#1251ff",
-                fontSize: "14px",
-                fontWeight: 500,
-                width: 300,
-                cursor: "pointer",
-            },
-        },
-        {
             name: "Tên người dùng",
-            selector: (row) => <span>{row.ten}</span>,
+            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
             grow: 8,
             style: {
                 cursor: "pointer",
@@ -55,49 +74,128 @@ export function QuanLyNguoiDung () {
         },
         {
             name: "Giới tính",
-            selector: (row) => <span>{row.trang_thai}</span>,
+            selector: (row) => row.gioi_tinh ? <span>{row?.gioi_tinh}</span> : <span className="text-danger"> N/A</span>,
             grow: 3,
         },
         {
             name: "Số điện thoại",
-            selector: (row) => <span>{row.trang_thai}</span>,
+            selector: (row) => row.dien_thoai ? <span>{row?.dien_thoai}</span> : <span className="text-danger"> N/A</span>,
             grow: 2,
         },
         {
-            name: "Vai trò",
-            selector: (row) => <span>{row.trang_thai}</span>,
+            name: "Email",
+            selector: (row) => row.email ? <span>{row?.email}</span> : <span className="text-danger"> N/A</span>,
+            grow: 2,
+        },
+        {
+            name: "Trạng thái",
+            selector: (row) => row.active ? <span>{row?.active}</span> : <span className="text-danger"> N/A</span>,
             grow: 2,
         },
         {
             name: "",
-            selector: (row) => <span>{row.trang_thai}</span>,
+            selector: (row) => 
+                <div style={{justifyContent: "end"}}>
+                    <button className="btn btn-link me-2" onClick={() => handleSubmit(row?.id, "Cập nhật")}>
+                        <i className="fas fa-edit text-primary"></i>
+                    </button>
+                    <button className="btn btn-link ms-2" onClick={() => handleDelete(row?.id)}>
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </button>
+                </div>
+            ,
             grow: 2,
         },
     ];
 
+    const formValidation = () => {
+        const newErrors = {};
+        const {ho, ten, tai_khoan, dien_thoai, email, mat_khau} = form;
+
+        if (!ho || ho === "") {
+            newErrors.ho = "Họ không được bỏ trống!"
+        }
+        if (!ten || ten === "") {
+            newErrors.ten = "Tên không được bỏ trống!"
+        }
+        if (!email || email === "") {
+            newErrors.email = "Email không được bỏ trống!"
+        } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) === false) {
+            newErrors.email = "Email không hợp lệ!"
+        }
+        if (!tai_khoan || tai_khoan === "") {
+            newErrors.tai_khoan = "Tài khoản không được bỏ trống!"
+        }
+        if (!dien_thoai || dien_thoai === "") {
+            newErrors.dien_thoai = "Điện thoại không được bỏ trống!"
+        } else if (dien_thoai.split("").length !== 10) {
+            newErrors.dien_thoai = "Điện thoại không hợp lệ!"
+        }
+        if (!mat_khau || mat_khau === "") {
+            newErrors.mat_khau = "Mật khẩu không được bỏ trống!"
+        }
+
+        return newErrors; 
+    
+    }
+
+    const handleSubmit = (id, type) => {
+        const newErrors = formValidation();
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+        } else {
+            onSubmit(id, type);
+        }
+    }
+
+    const onSubmit = (id, type) => {
+        if (type === "Tạo mới") {
+
+        } else if (type === "Cập nhật") {
+
+        }
+    }
+
+    const handleDelete = (id) => {
+
+    }
+
+
     return (
         <div className="py-3">
-            <div className="card-box">
+            <div className="card-box" style={{ padding: "32px" }}>
                 <div className="row">
-                    <div className="col-12">
-                        <h5 className="text-secondary fw-bolder">QUẢN LÝ NGƯỜI DÙNG</h5>
+                    <div className="col-12 mb-4">
+                        <h4 className="fw-bold">QUẢN LÝ NGƯỜI DÙNG</h4>
                     </div>
 
-                    <div className="col-12">
+                    <div className="col-8 mt-4 mb-6 ">
+                        <Form.Control
+                            type="text"
+                            placeholder="Nhập tên người dùng"
+                            style={{ fontSize: 14, fontWeight: 400, height: "38px", width: "320px" }}
+                            onChange={(e) => setSearchKey(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-4 ps-10">
+                        <h5 className="mt-4">{status} thông tin người dùng</h5>
+                    </div>
 
+                    <div className="col-8 mt-6 pe-10">
                         <DataTable
                             noDataComponent={"Không có dữ liệu ..."}
                             sortServer
                             progressPending={isLoading}
                             columns={columns}
-                            data={[]}
+                            data={nguoiDungList}
                             customStyles={customStyles}
                             pagination
                             highlightOnHover
                             pointerOnHover
                             paginationServer
                             paginationTotalRows={totalRows}
-                            // onChangeRowsPerPage={handlePerRowsChange}
+                            onChangeRowsPerPage={handlePerRowsChange}
                             onChangePage={handlePageChange}
                             paginationComponentOptions={paginationOptions}
                             conditionalRowStyles={conditionalRowStyles}
@@ -106,11 +204,7 @@ export function QuanLyNguoiDung () {
                             //   handleRowClicked(data);
                             // }}
                             progressComponent={
-                                <div
-                                    style={{
-                                        padding: "24px",
-                                    }}
-                                >
+                                <div style={{ padding: "24px" }}>
                                     <Oval
                                         arialLabel="loading-indicator"
                                         color="#007bff"
@@ -119,6 +213,101 @@ export function QuanLyNguoiDung () {
                                 </div>
                             }
                         />
+                    </div>
+
+                    <div className="col-4 mt-6 ps-10">
+                        <Form>
+                            <div className="row mb-4">
+                                <div className="col-3">
+                                    <span className="required">Họ</span>
+                                </div>
+                                <div className="col-4">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập họ"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="col-1">
+                                    <span className="required">Tên</span>
+                                </div>
+                                <div className="col-4">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+
+                            </div>
+
+                            <div className="row mb-4">
+                                <div className="col-3">
+                                    <span className="required">Tên đăng nhập</span>
+                                </div>
+                                <div className="col-9">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên người dùng"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row mb-4">
+                                <div className="col-3">
+                                    <span className="required">Số điện thoại</span>
+                                </div>
+                                <div className="col-9">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên người dùng"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row mb-4">
+                                <div className="col-3">
+                                    <span className="required">Email</span>
+                                </div>
+                                <div className="col-9">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên người dùng"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row mb-4">
+                                <div className="col-3">
+                                    <span className="required">Mật khẩu</span>
+                                </div>
+                                <div className="col-9">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nhập tên người dùng"
+                                        style={{ fontSize: 13, fontWeight: 400, height: "34px" }}
+                                        onChange={(e) => setSearchKey(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row mb-4 pt-4">
+                                <div className="col-12 text-center">
+                                    <button className="btn btn-primary py-3 me-3" style={{ fontSize: "12px", width: "120px" }}><i class="fas fa-save"></i>{status}</button>
+                                    <button className="btn btn-secondary py-3 ms-3" style={{ fontSize: "12px", width: "120px" }}><i class="fas fa-undo-alt"></i>Reset</button>
+                                </div>
+                            </div>
+ 
+                        </Form>
                     </div>
                 </div>
             </div>
