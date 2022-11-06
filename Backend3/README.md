@@ -32,3 +32,7 @@ minio123
 
 #flask run port 
 flask run --host=0.0.0.0 --port=7778
+
+
+MINIO_ACCESS_KEY=32OAKNIJQgUhrngy
+MINIO_SECRET_KEY=O5Tu106orRChNMczd6E7gYA2YKE96kC6
