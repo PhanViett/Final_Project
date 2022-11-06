@@ -1,13 +1,10 @@
+import os
 import random
 from datetime import datetime, timedelta
-from sys import prefix
-from urllib import response
-import os
-from flask import jsonify
 from minio import Minio
 from application.commons.progress import Progress
 
-config = {"bucket": "congsuckhoe"}
+config = {"bucket": os.getenv("MINIO_BUCKET_NAME")}
 
 
 class MinioHandler:
@@ -93,6 +90,8 @@ class MinioHandler:
         except Exception as e:
             raise Exception(e)
 
+
+
     def save_image_tin_tuc(self, bucket, file_data, file_name):
         try:
             datetime_prefix = datetime.now().strftime("%H%M%S")
@@ -105,123 +104,15 @@ class MinioHandler:
 
             self.client.put_object(
                 bucket_name=bucket,
-                object_name="uploads/" + "tin_tuc/" + object_name,  # Path + Name.ext
+                object_name="tin_tuc/" + object_name,  # Path + Name.ext
                 data=file_data,
                 length=-1,
                 part_size=10 * 1024 * 1024,
             )
 
-            return bucket + "/uploads" + "/tin_tuc" + "/" + object_name
+            return bucket + "/tin_tuc" + "/" + object_name
 
         except Exception as e:
             raise Exception(e)
 
-    def save_image_van_ban(self, bucket, file_data, file_name):
-        try:
-            datetime_prefix = datetime.now().strftime("%H%M%S")
-            object_name = f"{datetime_prefix}_{file_name}"
-            while self.check_file_name_exists(
-                bucket_name=bucket, file_name=object_name
-            ):
-                random_prefix = random.randint(1, 100000)
-                object_name = f"{datetime_prefix}_{random_prefix}_{file_name}"
-
-            self.client.put_object(
-                bucket_name=bucket,
-                object_name="uploads/" + "van_ban/" + object_name,  # Path + Name.ext
-                data=file_data,
-                length=-1,
-                part_size=10 * 1024 * 1024,
-            )
-
-            return bucket + "/uploads" + "/van_ban" + "/" + object_name
-
-        except Exception as e:
-            raise Exception(e)
-
-    def remove_image(self, bucket, file_name):
-        removed_bucket_path = file_name.replace(bucket + "/", "")
-        try:
-            self.client.remove_object(
-                bucket_name=bucket, object_name=removed_bucket_path
-            )
-        except Exception as e:
-            raise Exception(e)
-
-    def remove_picture_tin_tuc(self, bucket, file_name):
-        removed_bucket_path = file_name.replace(bucket + "/", "")
-        try:
-            self.client.remove_object(
-                bucket_name=bucket, object_name=removed_bucket_path
-            )
-        except Exception as e:
-            raise Exception(e)
-
-    def put_object(self, file_data, file_name, content_type):
-        try:
-            datetime_prefix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            object_name = f"{datetime_prefix}___{file_name}"
-            while self.check_file_name_exists(
-                bucket_name=self.bucket_name, file_name=object_name
-            ):
-                random_prefix = random.randint(1, 1000)
-                object_name = f"{datetime_prefix}___{random_prefix}___{file_name}"
-
-            self.client.put_object(
-                bucket_name=self.bucket_name,
-                object_name=object_name,  # Path + Name.ext
-                data=file_data,
-                content_type=content_type,
-                length=-1,
-                part_size=10 * 1024 * 1024,
-            )
-            url = self.presigned_get_object(
-                bucket_name=self.bucket_name, object_name=object_name
-            )
-            data_file = {
-                "bucket_name": self.bucket_name,
-                "file_name": object_name,
-                "url": url,
-            }
-            return data_file
-        except Exception as e:
-            raise Exception(e)
-
-    def save_file_path(self, file_data, file_name, path="/uploads/imports/", length=-1):
-        bucket = config.get("bucket")
-        try:
-            datetime_prefix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            ten_file = f"{datetime_prefix}___{file_name}"
-            while self.check_file_name_exists(bucket_name=bucket, file_name=ten_file):
-                random_prefix = random.randint(1, 1000)
-                ten_file = f"{datetime_prefix}___{random_prefix}___{file_name}"
-
-            result = self.client.put_object(
-                bucket_name=bucket,
-                object_name=path + ten_file,  # Path + Name.ext
-                data=file_data,
-                length=length,
-                part_size=10 * 1024 * 1024,
-                progress=Progress(),
-            )
-
-            return result.bucket_name + result.object_name
-
-        except Exception as e:
-            raise Exception(e)
-
-    def save_default_file_path(self, file_data, file_name, path="/uploads/imports/", length=-1):
-        bucket = config.get("bucket")
-        try:
-            result = self.client.put_object(
-                bucket_name=bucket,
-                object_name=path + file_name,  # Path + Name.ext
-                data=file_data,
-                length=length,
-                part_size=10 * 1024 * 1024,
-            )
-
-            return result.bucket_name + result.object_name
-
-        except Exception as e:
-            raise Exception(e)
+  
