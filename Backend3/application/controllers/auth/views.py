@@ -18,6 +18,7 @@ from flask import jsonify, request
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import current_user as user_jwt
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from application.utils.helper.upload_minio import UploadMinio
 
 ACCESS_EXPIRES = timedelta(days=365)
 
@@ -120,6 +121,22 @@ def register():
 def menu():
     role = user_jwt.assigned_role[0].ten_en
     return "<button><i class='fas fa-eye'></i></button>"
+
+
+
+
+@blueprint.route("/demo_upload", methods=["POST"])
+@jwt_required()
+def demoupload():
+    upload_errors = []
+    danh_sach_chung_tu_dk, errors = UploadMinio.upload_image_tin_tuc(request.files.getlist("dinh_kem[]"), many=True)
+    if danh_sach_chung_tu_dk:
+        return danh_sach_chung_tu_dk
+    elif errors:
+        return errors
+
+
+
 
 @blueprint.route("/get_current_user", methods=["POST"])
 @jwt_required()

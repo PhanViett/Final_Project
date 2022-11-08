@@ -22,12 +22,13 @@ class MinioHandler:
         self.access_key = os.getenv("MINIO_ACCESS_KEY")
         self.secret_key = os.getenv("MINIO_SECRET_KEY")
         self.bucket_name = {"bucket": os.getenv("MINIO_BUCKET_NAME")}
-        self.client = Minio(
-            self.minio_url,
-            access_key=self.access_key,
-            secret_key=self.secret_key,
-            secure=False,
-        )
+
+        print(self.minio_url)
+        print(self.access_key)
+        print(self.secret_key)
+        print(self.bucket_name)
+
+        self.client = Minio(self.minio_url, access_key=self.access_key, secret_key=self.secret_key, secure=False)
         self.make_bucket()
 
     def get_path(name):
@@ -67,30 +68,6 @@ class MinioHandler:
             print(f"[x] Exception: {e}")
             return False
 
-    def save_image(self, bucket, file_data, file_name):
-        try:
-            datetime_prefix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            object_name = f"{datetime_prefix}___{file_name}"
-            while self.check_file_name_exists(
-                bucket_name=bucket, file_name=object_name
-            ):
-                random_prefix = random.randint(1, 1000)
-                object_name = f"{datetime_prefix}___{random_prefix}___{file_name}"
-
-            self.client.put_object(
-                bucket_name=bucket,
-                object_name="uploads/" + "images/" + object_name,  # Path + Name.ext
-                data=file_data,
-                length=-1,
-                part_size=10 * 1024 * 1024,
-            )
-
-            return bucket + "/uploads" + "/images" + "/" + object_name
-
-        except Exception as e:
-            raise Exception(e)
-
-
 
     def save_image_tin_tuc(self, bucket, file_data, file_name):
         try:
@@ -104,15 +81,43 @@ class MinioHandler:
 
             self.client.put_object(
                 bucket_name=bucket,
-                object_name="tin_tuc/" + object_name,  # Path + Name.ext
+                object_name="hpda/" + object_name,  # Path + Name.ext
                 data=file_data,
                 length=-1,
                 part_size=10 * 1024 * 1024,
             )
-
-            return bucket + "/tin_tuc" + "/" + object_name
+            return bucket + "/hpda" + "/" + object_name
 
         except Exception as e:
             raise Exception(e)
 
   
+    def put_object(self, file_data, file_name, content_type):
+        try:
+            datetime_prefix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+            object_name = f"{datetime_prefix}___{file_name}"
+            while self.check_file_name_exists(
+                bucket_name=self.bucket_name, file_name=object_name
+            ):
+                random_prefix = random.randint(1, 1000)
+                object_name = f"{datetime_prefix}___{random_prefix}___{file_name}"
+
+            self.client.put_object(
+                bucket_name=self.bucket_name,
+                object_name=object_name,  # Path + Name.ext
+                data=file_data,
+                content_type=content_type,
+                length=-1,
+                part_size=10 * 1024 * 1024,
+            )
+            url = self.presigned_get_object(
+                bucket_name=self.bucket_name, object_name=object_name
+            )
+            data_file = {
+                "bucket_name": self.bucket_name,
+                "file_name": object_name,
+                "url": url,
+            }
+            return data_file
+        except Exception as e:
+            raise Exception(e)
