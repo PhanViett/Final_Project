@@ -29,9 +29,7 @@ export function QuanLyNguoiDung() {
         if (debouncedSearchKey !== undefined && searchKey !== undefined) {
             getList(1, perPage, debouncedSearchKey);
         }
-    },
-        [debouncedSearchKey]
-    );
+    }, [debouncedSearchKey]);
 
     const getList = (page_number = page, size = perPage, search_key = searchKey) => {
         axios
@@ -58,8 +56,7 @@ export function QuanLyNguoiDung() {
                 }
             })
             .catch(() => { })
-            .finally(() => {
-            });
+            .finally(() => { });
     };
 
     const columns = [
@@ -94,8 +91,8 @@ export function QuanLyNguoiDung() {
         },
         {
             name: "",
-            selector: (row) => 
-                <div style={{justifyContent: "end"}}>
+            selector: (row) =>
+                <div style={{ justifyContent: "end" }}>
                     <button className="btn btn-link me-2" onClick={() => handleSubmit(row?.id, "Cập nhật")}>
                         <i className="fas fa-edit text-primary"></i>
                     </button>
@@ -110,7 +107,7 @@ export function QuanLyNguoiDung() {
 
     const formValidation = () => {
         const newErrors = {};
-        const {ho, ten, tai_khoan, dien_thoai, email, mat_khau} = form;
+        const { ho, ten, tai_khoan, dien_thoai, email, mat_khau } = form;
 
         if (!ho || ho === "") {
             newErrors.ho = "Họ không được bỏ trống!"
@@ -135,8 +132,8 @@ export function QuanLyNguoiDung() {
             newErrors.mat_khau = "Mật khẩu không được bỏ trống!"
         }
 
-        return newErrors; 
-    
+        return newErrors;
+
     }
 
     const handleSubmit = (id, type) => {
@@ -306,7 +303,7 @@ export function QuanLyNguoiDung() {
                                     <button className="btn btn-secondary py-3 ms-3" style={{ fontSize: "12px", width: "120px" }}><i class="fas fa-undo-alt"></i>Reset</button>
                                 </div>
                             </div>
- 
+
                         </Form>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import { selectRoleUser } from "../../app/redux-module/auth/authSlice";
 
 import { QuanLyNguoiDung } from "../modules/apps/admin/quan-ly-nguoi-dung/QuanLyNguoiDung";
 import { QuanLyLichSu } from "../modules/apps/admin/quan-ly-lich-su/QuanLyLichSu";
+import { QuanLyTinTuc } from "../modules/apps/admin/quan-ly-tin-tuc/QuanLyTinTuc";
 
 const PrivateRoutes = () => {
     const roleUser = useSelector(selectRoleUser);
@@ -31,6 +32,8 @@ const PrivateRoutes = () => {
 
                 <Route path="admin/quan-ly-nguoi-dung" element={<QuanLyNguoiDung />} />
                 <Route path="admin/quan-ly-lich-su" element={<QuanLyLichSu />} />
+                <Route path="admin/quan-ly-tin-tuc" element={<QuanLyTinTuc />} />
+
                 {/* Page Not Found */}
                 <Route path="*" element={<Navigate to="/error/404" />} />
 

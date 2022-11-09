@@ -125,9 +125,9 @@ def menu():
 
 
 
-@blueprint.route("/demo_upload", methods=["POST"])
+@blueprint.route("/file/upload", methods=["POST"])
 @jwt_required()
-def demoupload():
+def file_upload():
     upload_errors = []
     danh_sach_chung_tu_dk, errors = UploadMinio.upload_image_tin_tuc(request.files.getlist("dinh_kem[]"), many=True)
     if danh_sach_chung_tu_dk:

@@ -27,9 +27,11 @@
 @import "./core/layout/docs/variables";
 
 // header
-@import "./layout/custom/header";
-@import "./layout/custom/content";
 @import "./layout/custom/main";
+@import "./layout/custom/header";
+@import "./layout/custom/buttons";
+@import "./layout/custom/content";
+@import "./layout/custom/ckeditor5";
 
 // common
 @import "./layout/admin/common";

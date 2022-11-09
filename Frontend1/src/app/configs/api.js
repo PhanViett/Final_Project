@@ -12,10 +12,14 @@ export default {
     API_TINH_THANH: API_URL + PATH_V1 + "danh-muc/tinh-thanh",
     API_QUAN_HUYEN: API_URL + PATH_V1 + "danh-muc/quan-huyen",
     API_XA_PHUONG: API_URL + PATH_V1 + "danh-muc/xa-phuong",
+    
     // PUBLIC QUAN, TINH, PHUONG
     API_TINH_THANH_PUBLIC: API_URL + PATH_V1 + "public/tinh-thanh",
     API_QUAN_HUYEN_PUBLIC: API_URL + PATH_V1 + "public/quan-huyen",
     API_XA_PHUONG_PUBLIC: API_URL + PATH_V1 + "public/xa-phuong",
+
+    // FILE UPLOAD
+    API_FILE_UPLOAD: API_URL + "file/upload",
 
     // QUAN LY NGUOI DUNG
     API_QUAN_LY_NGUOI_DUNG: API_URL + PATH_V1 + "user-get-list",
