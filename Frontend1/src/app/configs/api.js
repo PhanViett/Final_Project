@@ -23,7 +23,14 @@ export default {
 
     // QUAN LY NGUOI DUNG
     API_QUAN_LY_NGUOI_DUNG: API_URL + PATH_V1 + "user-get-list",
+    API_QUAN_LY_NGUOI_DUNG_CREATE: API_URL + PATH_V1 + "user-create",
+    API_QUAN_LY_NGUOI_DUNG_UPDATE: API_URL + PATH_V1 + "user-update",
+    API_QUAN_LY_NGUOI_DUNG_DELETE: API_URL + PATH_V1 + "user-delte",
+
 
     // QUAN LY LICH SU
     API_QUAN_LY_LICH_SU: API_URL + PATH_V1 + "record-get-list",
+    API_QUAN_LY_LICH_SU_CREATE: API_URL + PATH_V1 + "record-create",
+    API_QUAN_LY_LICH_SU_UPDATE: API_URL + PATH_V1 + "record-update",
+    API_QUAN_LY_LICH_SU_DELETE: API_URL + PATH_V1 + "record-delte",
 };

@@ -19,7 +19,7 @@ export function QuanLyTinTuc() {
     const [totalRows, setTotalRows] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [type, setType] = useState("Thêm mới");
     const [errors, setErrors] = useState({});
     const [searchKey, setSearchKey] = useState("");
@@ -165,8 +165,13 @@ export function QuanLyTinTuc() {
             },
         },
         {
-            name: "Tên người dùng",
-            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
+            name: "Thao tác",
+            selector: (row) => 
+                <div className="text-center">
+                    <button className="btn btn-link"><i className="fas fa-edit mx-2 text-primary"></i></button>
+                    <button className="btn btn-link"><i className="fas fa-trash mx-2 text-danger"></i></button>
+                </div>
+            ,
             grow: 8,
             style: {
                 cursor: "pointer",
@@ -191,8 +196,10 @@ export function QuanLyTinTuc() {
                             style={{ fontSize: 14, fontWeight: 400, height: "38px", width: "320px" }}
                         />
                     </div>
-                    <div className="col-4 text-end">
-                        <button className="btn btn-primary" style={{fontSize: "13px"}} onClick={() => {setShow(true)}}><i className="fas fa-plus me-1"></i>Tạo mới</button>
+                    <div className="col-4 mt-4 mb-6 text-end">
+                        <button className="btn btn-primary py-0" style={{ fontSize: "13px", height: "38px" }} onClick={() => { setShow(true) }}>
+                            <i className="fas fa-plus me-1" style={{fontSize: "12px"}}></i>Tạo mới
+                        </button>
                     </div>
 
                     <div className="col-12">
@@ -236,24 +243,24 @@ export function QuanLyTinTuc() {
 
             <Modal show={show} size="lg">
                 <Modal.Header className="py-5">
-                    <label style={{fontSize: "18px", fontWeight: 600}}>Thêm mới tin tức</label>
+                    <label style={{ fontSize: "18px", fontWeight: 600 }}>Thêm mới tin tức</label>
                 </Modal.Header>
                 <Modal.Body>
-                    <label className="mb-2 required" style={{fontWeight: 600}}>Tiêu đề</label>
-                    <Form.Control 
+                    <label className="mb-2 required" style={{ fontWeight: 600 }}>Tiêu đề</label>
+                    <Form.Control
                         type="text"
                         placeholder="Nhập tiêu đề..."
                         value={titleValue ? titleValue : ""}
                         onChange={(e) => setTitleValue(e.target.value)}
-                        style={{ fontWeight: 400 , fontSize: "13px", height: "38px"}}
+                        style={{ fontWeight: 400, fontSize: "13px", height: "38px" }}
                     />
-                    
+
                     <label className="mt-4 mb-2 required" style={{ fontWeight: 600 }}>Nội dung</label>
                     <CKEditor
                         data={editorValue}
                         editor={ClassicEditor}
                         config={config}
-                        onChange={(event, editor) => setEditorValue(editor.getData()) }
+                        onChange={(event, editor) => setEditorValue(editor.getData())}
                     />
                     <div className="row pt-6">
                         <div className="col-12 text-center">

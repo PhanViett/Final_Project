@@ -12,6 +12,7 @@ import { selectRoleUser } from "../../app/redux-module/auth/authSlice";
 import { QuanLyNguoiDung } from "../modules/apps/admin/quan-ly-nguoi-dung/QuanLyNguoiDung";
 import { QuanLyLichSu } from "../modules/apps/admin/quan-ly-lich-su/QuanLyLichSu";
 import { QuanLyTinTuc } from "../modules/apps/admin/quan-ly-tin-tuc/QuanLyTinTuc";
+import { Homepage } from "../modules/apps/user/Homepage";
 
 const PrivateRoutes = () => {
     const roleUser = useSelector(selectRoleUser);
@@ -20,16 +21,16 @@ const PrivateRoutes = () => {
         <Routes>
             <Route element={<MasterLayout />}>
                 {/* Redirect to Dashboard after success login/registartion */}
-                <Route path="/" element={<Navigate to="/admin/quan-ly-nguoi-dung" />} />
-
+                
                 <Route path="dang-nhap/*" element={<Navigate to="/dashboard" />}/>
                 <Route path="/dang-nhap" element={<Navigate to="/dashboard" />}/>
 
                 {roleUser === "user" ? 
-                <Route path="/" element={<Navigate to="/admin/quan-ly-nguoi-dung" />}
+                <Route path="/" element={<Navigate to="" />}
                     />
                 : null}
 
+                <Route path="" element={<Homepage />} />
                 <Route path="admin/quan-ly-nguoi-dung" element={<QuanLyNguoiDung />} />
                 <Route path="admin/quan-ly-lich-su" element={<QuanLyLichSu />} />
                 <Route path="admin/quan-ly-tin-tuc" element={<QuanLyTinTuc />} />

@@ -48,14 +48,13 @@ class Users(db.Model):
     # quan_huyen_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
     # xa_phuong_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
 
-    assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien",
-                                    cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))    
-    tai_khoan_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tai_khoan.id"), nullable=True)
     password = db.Column(db.String, nullable=True)
     active = db.Column(db.Boolean, default=True, nullable=False)
     vai_tro_id = db.Column(UUID(as_uuid=True), db.ForeignKey("vai_tro.id"), nullable=True)
     
+    tai_khoan = db.relationship("TaiKhoan", foreign_keys=[tai_khoan_id], backref="nhan_vien")
     records = db.relationship("Records", foreign_keys="Records.user_id", back_populates="users", uselist=False)
+    assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien", cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))   
 
 
     def __repr__(self):

@@ -72,7 +72,7 @@ class QuanLyNguoiDungCreate(Resource):
 
 class QuanLyNguoiDungUpdate(Resource):
     @jwt_required()
-    def post(self, id):
+    def put(self, id):
         schema = NhanVienUpdateSchema()
         user = Users.query.filter(Users.id == id, Users.active == True).first()
         if user is None: 
@@ -91,7 +91,7 @@ class QuanLyNguoiDungUpdate(Resource):
 
         db.session.commit()    
 
-        return {"status": "SUCCESS", "msg": "Tạo mới người dùng thành công"}, HttpCode.Created
+        return {"status": "SUCCESS", "msg": "Cập nhật người dùng thành công"}, HttpCode.Created
 
 
 class QuanLyNguoiDungDelete(Resource):

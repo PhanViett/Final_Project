@@ -50,7 +50,6 @@ class NguoiDungDisplaySchema(ma.SQLAlchemySchema):
         sqla_session = db.session
         load_instance = True
 
-
 # ONLY FOR SHOW
 class NhanVienWithRoleSchema(ma.SQLAlchemyAutoSchema):
 

@@ -30,7 +30,7 @@ const MasterLayout = () => {
         <div>
           <div className="sidenav text-center">
             <div className="menu-item">
-              <button className="btn btn-link" onClick={() => navigate("/home")} title="Trang chủ"><i className="fas fa-home ms-1"></i></button><br />
+              <button className="btn btn-link" onClick={() => navigate("")} title="Trang chủ"><i className="fas fa-home ms-1"></i></button><br />
               <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-nguoi-dung")} title="Quản lý người dùng"><i className="fas fa-users ms-1"></i></button><br />
               <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-lich-su")} title="Quản lý lịch sử"><i className="fas fa-notes-medical ms-1"></i></button><br />
               <button className="btn btn-link" onClick={() => navigate("/admin/quan-ly-tin-tuc")} title="Quản lý tin tức"><i className="fas fa-newspaper ms-1"></i></button><br />
