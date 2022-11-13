@@ -25,7 +25,8 @@ export default {
     API_QUAN_LY_NGUOI_DUNG: API_URL + PATH_V1 + "user-get-list",
     API_QUAN_LY_NGUOI_DUNG_CREATE: API_URL + PATH_V1 + "user-create",
     API_QUAN_LY_NGUOI_DUNG_UPDATE: API_URL + PATH_V1 + "user-update",
-    API_QUAN_LY_NGUOI_DUNG_DELETE: API_URL + PATH_V1 + "user-delte",
+    API_QUAN_LY_NGUOI_DUNG_DELETE: API_URL + PATH_V1 + "user-delete",
+    API_QUAN_LY_NGUOI_DUNG_INFO: API_URL + PATH_V1 + "user-info",
 
 
     // QUAN LY LICH SU

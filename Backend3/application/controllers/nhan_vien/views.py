@@ -1,4 +1,4 @@
-from application.controllers.nhan_vien.resources import QuanLyNguoiDungGetList, QuanLyNguoiDungCreate, QuanLyNguoiDungUpdate, QuanLyNguoiDungDelete
+from application.controllers.nhan_vien.resources import QuanLyNguoiDungGetList, QuanLyNguoiDungCreate, QuanLyNguoiDungUpdate, QuanLyNguoiDungDelete, GetUserInfo
 from application.extensions import apispec
 from application.utils.resource.http_code import HttpCode
 from flask import Blueprint, current_app, jsonify
@@ -14,6 +14,7 @@ def register_views():
     api.add_resource(QuanLyNguoiDungCreate, "/user-create", endpoint="user-create")
     api.add_resource(QuanLyNguoiDungUpdate, "/user-update/<id>", endpoint="user-update")
     api.add_resource(QuanLyNguoiDungDelete, "/user-delete/<id>", endpoint="user-delete")
+    api.add_resource(GetUserInfo, "/user-info/<id>", endpoint="user-info")
 
 
 @blueprint.errorhandler(ValidationError)

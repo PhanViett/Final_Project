@@ -31,6 +31,24 @@ class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         exclude = ("created_at", "updated_at", "deleted_at")
 
+class NhanVienRecordSchema(ma.SQLAlchemySchema):
+    ho_ten = ma.auto_field(dump_only=True)
+    ngay_sinh = ma.auto_field(dump_only=True)
+    gioi_tinh = ma.auto_field(dump_only=True)
+    height = ma.auto_field(dump_only=True)
+    weight = ma.auto_field(dump_only=True)
+    chol = ma.auto_field(dump_only=True)
+    gluc = ma.auto_field(dump_only=True)
+    smoke = ma.auto_field(dump_only=True)
+    alco = ma.auto_field(dump_only=True)
+    active = ma.auto_field(dump_only=True)
+
+    class Meta:
+        model = Users
+        sqla_session = db.session
+        load_instance = True
+            # exclude = ("created_at", "updated_at", "deleted_at")
+
 class NguoiDungDisplaySchema(ma.SQLAlchemySchema):
     id = fields.String(dump_only=True)
     ho_ten = fields.String(dump_only=True)
@@ -57,36 +75,6 @@ class NhanVienWithRoleSchema(ma.SQLAlchemyAutoSchema):
     mat_khau = ma.String(load_only=True, required=True)
     email = fields.Email()
     vai_tro_id = ma.String(load_only=True)
-
-    class Meta:
-        model = Users
-        sqla_session = db.session
-        load_instance = True
-        exclude = ("created_at", "updated_at", "deleted_at")
-
-
-class NhanVienForSwaggerSchema(ma.SQLAlchemyAutoSchema):
-
-    id = ma.auto_field(dump_only=True)
-    email = fields.Email()
-    vai_tro_id = ma.auto_field()
-    tai_khoan = fields.String()
-    mat_khau = fields.String()
-
-    class Meta:
-        model = Users
-        sqla_session = db.session
-        load_instance = True
-        exclude = ("created_at", "updated_at", "deleted_at", )
-
-
-class NhanVienWithTaiKhoanSchema(ma.SQLAlchemyAutoSchema):
-
-    id = ma.auto_field(dump_only=True)
-    email = fields.Email()
-    vai_tro_id = ma.auto_field()
-    tai_khoan_id = ma.auto_field(load_only=True)
-    ten_tai_khoan = fields.String(attribute="assigned_account.tai_khoan", dump_only=True)
 
     class Meta:
         model = Users

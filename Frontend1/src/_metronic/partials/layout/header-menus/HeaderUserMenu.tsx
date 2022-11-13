@@ -2,7 +2,6 @@
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { optionsDoiTuong } from "../../../../app/data";
 import {
     authActions,
     selectCurrentUser,
@@ -20,23 +19,22 @@ const HeaderUserMenu: FC = () => {
     const [roles, setRoles] = useState<any | undefined>();
 
     useEffect(() => {
-        console.log(currentUser);
         if (roleUser) {
             setRoles(roleUser);
         }
-        if (currentUser) {
-            getChucVu(currentUser?.chuc_vu);
-        }
+        // if (currentUser) {
+        //     getChucVu(currentUser?.chuc_vu);
+        // }
     }, [roleUser, currentUser]);
 
-    const getChucVu = (chuc_vu: any) => {
-        let chucVu = optionsDoiTuong.find(
-            (e: any) => e.value === String(chuc_vu)
-        );
-        if (chucVu) {
-            setChucVu(chucVu?.label);
-        }
-    };
+    // const getChucVu = (chuc_vu: any) => {
+    //     let chucVu = optionsDoiTuong.find(
+    //         (e: any) => e.value === String(chuc_vu)
+    //     );
+    //     if (chucVu) {
+    //         setChucVu(chucVu?.label);
+    //     }
+    // };
 
     return (
         <div

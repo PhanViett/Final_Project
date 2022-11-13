@@ -4,7 +4,6 @@
         width: 100%;
         height: 68px;
         position: fixed;
-        overflow: hidden;
         color: black;     
         background-color: #fff;
         border-bottom: 1px solid;
@@ -12,11 +11,7 @@
 
     .topnav a {
         float: left;
-        display: block;
-        font-size: 17px;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
+        padding: 10px 28px;
         text-decoration: none;
     }
 
@@ -53,13 +48,25 @@
         color: #f1f1f1;
     }
 
-
-
     
     .content {
         padding: 16px;
         margin: 68px 0 0 68px;
     }
+
+
+    .dropdown {
+
+        .dropdown-toggle {
+            padding: 0;
+        }
+
+        .dropdown-menu {
+            font-size: 13px;
+            display: inline-block;
+        }
+    }
+
 
     @media screen and (max-height: 450px) {
         .sidenav {

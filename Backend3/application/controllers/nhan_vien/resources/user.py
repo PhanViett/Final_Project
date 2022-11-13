@@ -2,7 +2,7 @@ from application.commons.pagination import paginate
 from application.extensions import db
 from application.models import Users
 from application.models.tai_khoan import TaiKhoan
-from application.schemas.nhan_vien import NguoiDungDisplaySchema, NhanVienUpdateSchema
+from application.schemas.nhan_vien import NguoiDungDisplaySchema, NhanVienUpdateSchema, NhanVienRecordSchema
 from application.utils.helper.string_processing_helper import clean_string
 from application.utils.resource.http_code import HttpCode
 from flask import jsonify, request
@@ -105,3 +105,16 @@ class QuanLyNguoiDungDelete(Resource):
         db.session.commit()
 
         return {"msg": "Xóa người dùng thành công!"}, HttpCode.OK
+
+
+class GetUserInfo(Resource):
+    @jwt_required()
+    def get(self, id):
+        schema = NhanVienRecordSchema()
+        user = Users.query.filter(Users.id == id, Users.status == True).first()
+        
+        if user is None: 
+            return jsonify({"status": "FAILED", "msg": "Người dùng không tồn tại trong hệ thống"}), HttpCode.BadRequest
+        else:
+            result = schema.dump(user)
+        return result, HttpCode.OK

@@ -48,8 +48,19 @@ class Users(db.Model):
     # quan_huyen_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
     # xa_phuong_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
 
+    tuoi = db.Column(db.BigInteger, nullable=True)
+    gioi_tinh = db.Column(db.BigInteger, nullable=True)
+    height = db.Column(db.BigInteger, nullable=True)
+    weight = db.Column(db.BigInteger, nullable=True)
+    chol = db.Column(db.BigInteger, nullable=True)
+    gluc = db.Column(db.BigInteger, nullable=True)
+    smoke = db.Column(db.BigInteger, nullable=True)
+    alco = db.Column(db.BigInteger, nullable=True)
+    active = db.Column(db.BigInteger, nullable=True)
+
+
     password = db.Column(db.String, nullable=True)
-    active = db.Column(db.Boolean, default=True, nullable=False)
+    status = db.Column(db.Boolean, default=True, nullable=False)
     vai_tro_id = db.Column(UUID(as_uuid=True), db.ForeignKey("vai_tro.id"), nullable=True)
     
     tai_khoan = db.relationship("TaiKhoan", foreign_keys=[tai_khoan_id], backref="nhan_vien")
