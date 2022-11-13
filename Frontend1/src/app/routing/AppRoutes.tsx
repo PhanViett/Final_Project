@@ -4,11 +4,14 @@ import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MasterLayout } from "../../_metronic/layout/MasterLayout";
 import { App } from "../App";
 import { Logout } from "../modules/apps/auth";
 import { ForgotPassword } from "../modules/apps/auth/components/ForgotPassword";
 import { Login } from "../modules/apps/auth/Login";
 import { Register } from "../modules/apps/auth/Register";
+import { Diagnostic } from "../modules/apps/user/Diagnostic";
+import { Homepage } from "../modules/apps/user/Homepage";
 import { ErrorsPage } from "../modules/errors/ErrorsPage";
 import { selectCurrentUser } from "../redux-module/auth/authSlice";
 import { PrivateRoutes } from "./PrivateRoutes";
@@ -21,11 +24,20 @@ const AppRoutes: FC = () => {
     <BrowserRouter basename={PUBLIC_URL}>
       <Routes>
         <Route element={<App />}>
-          <Route path="login/*" element={<Login />} />
+          
+          
+          
+          <Route element={<MasterLayout />}>
+            <Route path="trang-chu" element={<Homepage />} />
+            <Route path="chan-doan" element={<Diagnostic />} />
+          </Route>
 
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="logout" element={<Logout />} />
+
+          
+          <Route path="dang-nhap/*" element={<Login />} />
+          <Route path="dang-nhap" element={<Login />} />
+          <Route path="dang-ky" element={<Register />} />
+          <Route path="dang-xuat" element={<Logout />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
 
           <Route path="error/*" element={<ErrorsPage />} />
@@ -35,8 +47,8 @@ const AppRoutes: FC = () => {
             </>
           ) : (
             <>
-              <Route path="login/*" element={<Login />} />
-              <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="dang-nhap/*" element={<Login />} />
+                <Route path="*" element={<Navigate to="/dang-nhap" />} />
             </>
           )}
         </Route>

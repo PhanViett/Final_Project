@@ -169,7 +169,7 @@ export function Login() {
                                 </div>
                             </Form>
                             <div className="form-group text-center mt-2 mb-3">
-                                <NavLink to="/register">Bạn chưa có tài khoản ?</NavLink>
+                                <NavLink to="/dang-ky">Bạn chưa có tài khoản ?</NavLink>
                             </div>
 
                             <div className="form-group float-start">

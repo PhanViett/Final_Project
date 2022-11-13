@@ -96,7 +96,7 @@ export function Register() {
             .then((data) => {
                 if (data.status === "SUCCESS") {
                     setTimeout(() => {
-                        navigate("/login")
+                        navigate("/dang-nhap")
                     }, 2000);
                 }
             })
@@ -277,7 +277,7 @@ export function Register() {
                                 </div>
                             </Form>
                             <div className="form-group text-center mt-2 mb-3">
-                                <NavLink to="/login">Bạn đã có tài khoản ?</NavLink>
+                                <NavLink to="/dang-nhap">Bạn đã có tài khoản ?</NavLink>
                             </div>
 
                             <div className="form-group float-start">
