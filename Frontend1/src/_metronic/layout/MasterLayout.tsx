@@ -9,6 +9,7 @@ import { PageDataProvider } from "./core";
 const MasterLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    
     useEffect(() => {
         setTimeout(() => {
             MenuComponent.reinitialization();
@@ -49,7 +50,7 @@ const MasterLayout = () => {
                                     <Dropdown.Item className="py-0" style={{ height: "4px" }}>
                                         <hr style={{ margin: "2px 0", opacity: "0.08" }} />
                                     </Dropdown.Item>
-                                    <Dropdown.Item>
+                                    <Dropdown.Item onClick={() => navigate("/thong-tin-ca-nhan")}>
                                         Cập nhật thông tin
                                     </Dropdown.Item>
                                     <Dropdown.Item className="py-0" style={{ height: "4px" }}>

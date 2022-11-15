@@ -4,7 +4,7 @@ import {
     Dispatch,
     SetStateAction,
     useEffect,
-    useState,
+    useState
 } from "react";
 import { toast } from "react-toastify";
 import { ID, QueryResponseContextProps, QueryState } from "./models";
@@ -33,11 +33,11 @@ function stringifyRequestQuery(state: QueryState): string {
 
     const filter = state.filter
         ? Object.entries(state.filter as Object)
-              .filter((obj) => isNotEmpty(obj[1]))
-              .map((obj) => {
-                  return `filter_${obj[0]}=${obj[1]}`;
-              })
-              .join("&")
+            .filter((obj) => isNotEmpty(obj[1]))
+            .map((obj) => {
+                return `filter_${obj[0]}=${obj[1]}`;
+            })
+            .join("&")
         : "";
 
     return [pagination, sort, search, filter]
@@ -160,3 +160,4 @@ export {
     isNotEmpty,
     compareDate,
 };
+

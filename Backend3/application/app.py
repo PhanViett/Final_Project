@@ -3,7 +3,8 @@ from application.controllers import (
     nhan_vien,
     auth,
     records,
-    vai_tro
+    vai_tro,
+    location
 )
 
 from application import manage
@@ -116,6 +117,8 @@ def register_blueprints(app):
     app.register_blueprint(nhan_vien.views.blueprint)
     app.register_blueprint(vai_tro.views.blueprint)
     app.register_blueprint(records.views.blueprint)
+    app.register_blueprint(location.views.blueprint)
+
 
 
 

@@ -12,6 +12,7 @@ import { Login } from "../modules/apps/auth/Login";
 import { Register } from "../modules/apps/auth/Register";
 import { Diagnostic } from "../modules/apps/user/Diagnostic";
 import { Homepage } from "../modules/apps/user/Homepage";
+import { Info } from "../modules/apps/user/Info";
 import { News } from "../modules/apps/user/News";
 import { ErrorsPage } from "../modules/errors/ErrorsPage";
 import { selectCurrentUser } from "../redux-module/auth/authSlice";
@@ -29,6 +30,8 @@ const AppRoutes: FC = () => {
 
 
                     <Route element={<MasterLayout />}>
+                        <Route path="thong-tin-ca-nhan" element={<Info />} />
+
                         <Route path="trang-chu" element={<Homepage />} />
                         <Route path="chan-doan" element={<Diagnostic />} />
                         <Route path="tin-tuc" element={<News />} />
