@@ -10,6 +10,8 @@ import { Logout } from "../modules/apps/auth";
 import { ForgotPassword } from "../modules/apps/auth/components/ForgotPassword";
 import { Login } from "../modules/apps/auth/Login";
 import { Register } from "../modules/apps/auth/Register";
+import { BlogCreate } from "../modules/apps/user/BlogCreate";
+import { BlogList } from "../modules/apps/user/BlogList";
 import { Diagnostic } from "../modules/apps/user/Diagnostic";
 import { Homepage } from "../modules/apps/user/Homepage";
 import { Info } from "../modules/apps/user/Info";
@@ -35,6 +37,9 @@ const AppRoutes: FC = () => {
                         <Route path="trang-chu" element={<Homepage />} />
                         <Route path="chan-doan" element={<Diagnostic />} />
                         <Route path="tin-tuc" element={<News />} />
+                        <Route path="tin-tuc/them-moi" element={<BlogCreate />} />
+                        <Route path="tin-tuc/danh-sach" element={<BlogList />} />
+
                     </Route>
 
 

@@ -5,6 +5,7 @@ from application.models.record import Records
 from application.models.tinh_thanh import TinhThanh
 from application.models.quan_huyen import QuanHuyen
 from application.models.xa_phuong import XaPhuong
+from application.models.tin_tuc import TinTuc
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "TinhThanh",
     "QuanHuyen",
     "XaPhuong"
+    "TinTuc"
 ]

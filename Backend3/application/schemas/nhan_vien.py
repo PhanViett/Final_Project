@@ -11,7 +11,12 @@ class NhanVienSchema(ma.SQLAlchemyAutoSchema):
     vai_tro_id = ma.auto_field()
     tai_khoan_id = ma.auto_field(load_only=True)
     assigned_role = ma.Nested(VaiTroSchema, many=True)
-
+    tinh_thanh_hien_nay_id = ma.auto_field()
+    tinh_thanh_thuong_tru_id = ma.auto_field()
+    quan_huyen_hien_nay_id = ma.auto_field()
+    quan_huyen_thuong_tru_id = ma.auto_field()
+    xa_phuong_hien_nay_id = ma.auto_field()
+    xa_phuong_thuong_tru_id = ma.auto_field()
     class Meta:
         model = Users
         sqla_session = db.session
@@ -20,10 +25,25 @@ class NhanVienSchema(ma.SQLAlchemyAutoSchema):
 
 class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
     id = ma.auto_field(dump_only=True)
-    ho = ma.auto_field(load_only=True)
-    ten = ma.auto_field(load_only=True)
-    email = ma.auto_field(load_only=True)
-    dien_thoai = ma.auto_field(load_only=True)
+    avatar_url = ma.auto_field(load_only=True)
+    ho = ma.auto_field()
+    ten = ma.auto_field()
+    ngay_sinh = ma.auto_field()
+    gioi_tinh = ma.auto_field()
+    ma_cong_dan = ma.auto_field()
+    ngay_cap = ma.auto_field()
+    noi_cap = ma.auto_field()
+    dien_thoai = ma.auto_field()
+    email = ma.auto_field()
+    tinh_thanh_hien_nay_id = ma.auto_field()
+    quan_huyen_hien_nay_id = ma.auto_field()
+    xa_phuong_hien_nay_id = ma.auto_field()
+    so_nha_hien_nay = ma.auto_field()
+    tinh_thanh_thuong_tru_id = ma.auto_field()
+    quan_huyen_thuong_tru_id = ma.auto_field()
+    xa_phuong_thuong_tru_id = ma.auto_field()
+    so_nha_thuong_tru = ma.auto_field()
+
 
     class Meta:
         model = Users

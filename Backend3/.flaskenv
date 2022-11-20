@@ -3,8 +3,10 @@ FLASK_BUILD_DATE="10/12/2021 22:22 22:22"
 FLASK_DEBUG=True
 FLASK_APP=application.app:create_app
 SECRET_KEY=changeme
+
 DATABASE_URI=postgresql://ygjnzrzjddrvwh:45cec75ed26b4c41eb3d337eea5ae07a953f891cf438a42139560baa6c10de42@ec2-44-208-88-195.compute-1.amazonaws.com:5432/dci8ckqfj03mg2
 DATABASE_TEST_URL=postgresql://ygjnzrzjddrvwh:45cec75ed26b4c41eb3d337eea5ae07a953f891cf438a42139560baa6c10de42@ec2-44-208-88-195.compute-1.amazonaws.com:5432/dci8ckqfj03mg2
+
 
 MINIO_BUCKET_NAME=hpda
 MINIO_URL=172.20.160.1:9000

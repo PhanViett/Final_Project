@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default class UploadAdapter {
     constructor(loader, url) {
@@ -29,7 +30,16 @@ export default class UploadAdapter {
 
                     })
                     .catch((error) => {
-                        reject("Server Error");
+                        toast.error("Tải file thất bại", {
+                            position: "top-right",
+                            autoClose: 1000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            toastId: "error",
+                        });
                     });
             });
         }

@@ -42,11 +42,15 @@ class Users(db.Model):
     noi_cap = db.Column(db.String(80), nullable=True)
     email = db.Column(db.String(80), nullable=True)
 
-    dia_chi = db.Column(db.String, nullable=True)
-    so_nha = db.Column(db.String, nullable=True)
-    # tinh_thanh_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tinh_thanh.id"), nullable=True)
-    # quan_huyen_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
-    # xa_phuong_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
+    tinh_thanh_hien_nay_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tinh_thanh.id"), nullable=True)
+    quan_huyen_hien_nay_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
+    xa_phuong_hien_nay_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
+    so_nha_hien_nay = db.Column(db.String, nullable=True)
+
+    tinh_thanh_thuong_tru_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tinh_thanh.id"), nullable=True)
+    quan_huyen_thuong_tru_id = db.Column(UUID(as_uuid=True), db.ForeignKey("quan_huyen.id"), nullable=True)
+    xa_phuong_thuong_tru_id = db.Column(UUID(as_uuid=True), db.ForeignKey("xa_phuong.id"), nullable=True)
+    so_nha_thuong_tru = db.Column(db.String, nullable=True)
 
     tuoi = db.Column(db.BigInteger, nullable=True)
     gioi_tinh = db.Column(db.BigInteger, nullable=True)
@@ -58,6 +62,13 @@ class Users(db.Model):
     alco = db.Column(db.BigInteger, nullable=True)
     active = db.Column(db.BigInteger, nullable=True)
 
+    tinh_thanh_thuong_tru = db.relationship("TinhThanh", foreign_keys=[tinh_thanh_thuong_tru_id], uselist=False)
+    quan_huyen_thuong_tru = db.relationship("QuanHuyen", foreign_keys=[quan_huyen_thuong_tru_id], uselist=False)
+    xa_phuong_thuong_tru = db.relationship("XaPhuong", foreign_keys=[xa_phuong_thuong_tru_id], uselist=False)
+
+    tinh_thanh_hien_nay = db.relationship("TinhThanh", foreign_keys=[tinh_thanh_hien_nay_id], uselist=False)
+    quan_huyen_hien_nay = db.relationship("QuanHuyen", foreign_keys=[quan_huyen_hien_nay_id], uselist=False)
+    xa_phuong_hien_nay = db.relationship("XaPhuong", foreign_keys=[xa_phuong_hien_nay_id], uselist=False)
 
     password = db.Column(db.String, nullable=True)
     status = db.Column(db.Boolean, default=True, nullable=False)
@@ -71,23 +82,23 @@ class Users(db.Model):
     def __repr__(self):
         return "<Users %s>" % self.ten
 
-    def __init__(self, tai_khoan_id=None, email=None, active=None, noi_cap=None,
-                 ho=None, ten=None, so_nha=None, dia_chi=None, dien_thoai=None, ngay_cap=None,
-                 id_mapping=None, so_nha_thuong_tru=None, dia_chi_thuong_tru=None,
-                 ma_cong_dan=None, gioi_tinh=None, quan_huyen_id=None, tinh_thanh_id=None, xa_phuong_id=None,
-                 quan_huyen_hien_nay_id=None, tinh_thanh_hien_nay_id=None, xa_phuong_hien_nay_id=None, van_bang_chuyen_mon_id=None,
-                 noi_tot_nghiep_id=None, nam_tot_nghiep=None, gioithieu=None, avatar_url=None, da_cap_chung_chi=None, vai_tro_id=None,
-                 ngay_sinh=None, chuc_vu=None):
+    def __init__(self, tai_khoan_id=None, email=None, active=None, noi_cap=None, ho=None, ten=None, so_nha_hien_nay=None, 
+                 dien_thoai=None, ngay_cap=None, id_mapping=None, so_nha_thuong_tru=None, ma_cong_dan=None, gioi_tinh=None, 
+                 quan_huyen_thuong_tru_id=None, tinh_thanh_thuong_tru_id=None, xa_phuong_thuong_tru_id=None, quan_huyen_hien_nay_id=None, 
+                 tinh_thanh_hien_nay_id=None, xa_phuong_hien_nay_id=None, van_bang_chuyen_mon_id=None, noi_tot_nghiep_id=None, 
+                 nam_tot_nghiep=None, gioithieu=None, avatar_url=None, da_cap_chung_chi=None, vai_tro_id=None, ngay_sinh=None, chuc_vu=None):
         self.id = uuid.uuid4()
         self.tai_khoan_id = tai_khoan_id
         self.email = email
         self.ho = ho
         self.ten = ten
-        self.so_nha = so_nha
-        self.dia_chi = dia_chi
-        self.quan_huyen_hien_nay_id = quan_huyen_hien_nay_id
+        self.so_nha_hien_nay = so_nha_hien_nay
         self.tinh_thanh_hien_nay_id = tinh_thanh_hien_nay_id
+        self.quan_huyen_hien_nay_id = quan_huyen_hien_nay_id
         self.xa_phuong_hien_nay_id = xa_phuong_hien_nay_id
+        self.tinh_thanh_thuong_tru_id = tinh_thanh_thuong_tru_id  
+        self.quan_huyen_thuong_tru_id = quan_huyen_thuong_tru_id
+        self.xa_phuong_thuong_tru_id = xa_phuong_thuong_tru_id
         self.dien_thoai = dien_thoai
         self.active = active
         self.noi_cap = noi_cap
@@ -97,10 +108,6 @@ class Users(db.Model):
         self.gioi_tinh = gioi_tinh
         self.ma_cong_dan = ma_cong_dan
         self.so_nha_thuong_tru = so_nha_thuong_tru
-        self.dia_chi_thuong_tru = dia_chi_thuong_tru
-        self.quan_huyen_id = quan_huyen_id
-        self.tinh_thanh_id = tinh_thanh_id
-        self.xa_phuong_id = xa_phuong_id
         self.van_bang_chuyen_mon_id = van_bang_chuyen_mon_id
         self.noi_tot_nghiep_id = noi_tot_nghiep_id
         self.nam_tot_nghiep = nam_tot_nghiep
@@ -114,7 +121,7 @@ class Users(db.Model):
 
     def __str__(self):
         return "ID=%d, Email=%s, last_name=%s, first_name=%s, address=%s, phone=%s" % \
-               (self.id, self.email, self.ho, self.ten, self.dia_chi)
+               (self.id, self.email, self.ho, self.ten)
 
     def create_tsvector(*args):
         exp = args[0]

@@ -15,7 +15,7 @@ class QuanLyNguoiDungGetList(Resource):
     @ jwt_required()
     def post(self):
         schema = NguoiDungDisplaySchema(many=True)
-        query = Users.query.filter(Users.active == True)
+        query = Users.query.filter(Users.status == True)
         data = request.json
         
         if not data:
@@ -74,17 +74,29 @@ class QuanLyNguoiDungUpdate(Resource):
     @jwt_required()
     def put(self, id):
         schema = NhanVienUpdateSchema()
-        user = Users.query.filter(Users.id == id, Users.active == True).first()
+        user = Users.query.filter(Users.id == id, Users.status == True).first()
         if user is None: 
             return jsonify({"status": "FAILED", "msg": "Người dùng không tồn tại trong hệ thống"}), HttpCode.BadRequest
 
         req = {
-            "ho": request.json.get("ho"),
-            "ten": request.json.get('ten'),
-            # "tai_khoan": request.json.get('tai_khoan'),
-            # "mat_khau": request.json.get('mat_khau'),
-            "email": request.json.get('email'),
-            "dien_thoai": request.json.get('dien_thoai'), 
+            "avatar_url": request.form.get('avatar_url'),
+            "ho": request.form.get("ho"),
+            "ten": request.form.get('ten'),
+            "ngay_sinh": request.form.get('ngay_sinh'),
+            "gioi_tinh": request.form.get('gioi_tinh'),
+            "ma_cong_dan": request.form.get('ma_cong_dan'),
+            "ngay_cap": request.form.get('ngay_cap'),
+            "noi_cap": request.form.get('noi_cap'),
+            "dien_thoai": request.form.get('dien_thoai'),
+            "email": request.form.get('email'),
+            "tinh_thanh_hien_nay_id": request.form.get('tinh_thanh_hien_nay_id'),
+            "quan_huyen_hien_nay_id": request.form.get('quan_huyen_hien_nay_id'),
+            "xa_phuong_hien_nay_id": request.form.get('xa_phuong_hien_nay_id'),
+            "so_nha_hien_nay": request.form.get('so_nha_hien_nay'),
+            "tinh_thanh_thuong_tru_id": request.form.get('tinh_thanh_thuong_tru_id'),
+            "quan_huyen_thuong_tru_id": request.form.get('quan_huyen_thuong_tru_id'),
+            "xa_phuong_thuong_tru_id": request.form.get('xa_phuong_thuong_tru_id'),
+            "so_nha_thuong_tru": request.form.get('so_nha_thuong_tru'),
         }
        
         user = schema.load(req, instance=user)
@@ -97,7 +109,7 @@ class QuanLyNguoiDungUpdate(Resource):
 class QuanLyNguoiDungDelete(Resource):
     @jwt_required()
     def delete(self, id):
-        user = Users.query.filter(Users.id == id, Users.active == True).first()
+        user = Users.query.filter(Users.id == id, Users.status == True).first()
         
         if user is None:
             return jsonify({"status": "FAILED", "msg": "Người dùng không tồn tại trong hệ thống"}), HttpCode.BadRequest

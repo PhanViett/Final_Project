@@ -1,7 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 const API_URL = process.env.REACT_APP_API_URL;
 const PATH_V1 = process.env.REACT_APP_PATH_V1;
+const PATH_V2 = process.env.REACT_APP_PATH_V2;
 const PATH_CDN = process.env.REACT_APP_CDN_URL;
+const API_LOCATION_URL = process.env.REACT_APP_LOCATION_API_URL;
 
 export default {
     CDN: PATH_CDN,
@@ -14,10 +16,10 @@ export default {
     API_XA_PHUONG: API_URL + PATH_V1 + "danh-muc/xa-phuong",
     
     // PUBLIC QUAN, TINH, PHUONG
-    API_TINH_THANH_PUBLIC: API_URL + PATH_V1 + "public/tinh-thanh",
-    API_QUAN_HUYEN_PUBLIC: API_URL + PATH_V1 + "public/quan-huyen",
-    API_XA_PHUONG_PUBLIC: API_URL + PATH_V1 + "public/xa-phuong",
-
+    API_TINH_THANH_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/tinh-thanh/get-all",
+    API_QUAN_HUYEN_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/quan-huyen/get-all/",
+    API_XA_PHUONG_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/xa-phuong/get-all/",
+    API_NOI_CAP_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/CA-tinh-thanh",
     // FILE UPLOAD
     API_FILE_UPLOAD: API_URL + "file/upload",
 

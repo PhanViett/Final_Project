@@ -123,19 +123,15 @@ def menu():
     return "<button><i class='fas fa-eye'></i></button>"
 
 
-
-
 @blueprint.route("/file/upload", methods=["POST"])
 @jwt_required()
 def file_upload():
-    upload_errors = []
+    a = request.files.getlist("dinh_kem[]")
     danh_sach_chung_tu_dk, errors = UploadMinio.upload_image_tin_tuc(request.files.getlist("dinh_kem[]"), many=True)
     if danh_sach_chung_tu_dk:
         return danh_sach_chung_tu_dk
     elif errors:
         return errors
-
-
 
 
 @blueprint.route("/get_current_user", methods=["POST"])
