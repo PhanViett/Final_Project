@@ -336,7 +336,6 @@ export function Diagnostic() {
 
                             </div>
                         </div>
-
                         :
                         <div className="d-flex justify-content-center align-items-center" style={{ height: "78vh" }}>
                             Đang nhận data từ thiết bị

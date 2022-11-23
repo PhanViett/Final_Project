@@ -32,7 +32,6 @@ class UploadMinio:
                     data = target.read()
                     file_name = " ".join(target.filename.strip().split())
                     data_file = MinioHandler().get_instance().save_image_tin_tuc(bucket=config.get("bucket"), file_name=file_name, file_data=BytesIO(data))
-                    # data_file = MinioHandler().save_image_tin_tuc(bucket=config.get("bucket"), file_name=file_name, file_data=BytesIO(data))
                     url_list.append({"name": file_name, "url": data_file})
                 except Exception as e:
                     error_messages.append(target.filename+" tải lên thất bại")

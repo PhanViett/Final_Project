@@ -1,10 +1,12 @@
+import os
 from flask import Flask, request
 from application.controllers import (
     nhan_vien,
     auth,
     records,
     vai_tro,
-    location
+    location,
+    tin_tuc
 )
 
 from application import manage
@@ -17,10 +19,6 @@ from application.extensions import migrate
 from jwt import ExpiredSignatureError
 from flask_cors import CORS
 from flask_seeder import FlaskSeeder
-import os
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-
 # from elasticapm.contrib.flask import ElasticAPM
 
 
@@ -118,6 +116,8 @@ def register_blueprints(app):
     app.register_blueprint(vai_tro.views.blueprint)
     app.register_blueprint(records.views.blueprint)
     app.register_blueprint(location.views.blueprint)
+    app.register_blueprint(tin_tuc.views.blueprint)
+
 
 
 

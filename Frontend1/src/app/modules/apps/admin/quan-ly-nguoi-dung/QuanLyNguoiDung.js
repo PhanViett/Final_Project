@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-import { Oval } from "react-loader-spinner";
+import { Dna, InfinitySpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../../_metronic/assets/custom/table";
 import { useDebounce } from "../../../../../_metronic/helpers";
@@ -14,7 +14,7 @@ export function QuanLyNguoiDung() {
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
     const [totalRows, setTotalRows] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [show, setShow] = useState(false);
     const [form, setForm] = useState({});
@@ -52,6 +52,7 @@ export function QuanLyNguoiDung() {
     };
 
     const getList = ({page_number = page, size = perPage, search_key = searchKey}) => {
+        setIsLoading(true);
         axios
             .post(api.API_QUAN_LY_NGUOI_DUNG + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
             .then(({ data }) => {
@@ -59,6 +60,12 @@ export function QuanLyNguoiDung() {
                     setNguoiDungList(data?.results);
                     setTotalRows(data?.total);
                 }
+            })
+            .catch((error) => {
+
+            })
+            .finally(() => {
+                setIsLoading(false);
             })
     }
 
@@ -339,16 +346,11 @@ export function QuanLyNguoiDung() {
                             onChangePage={handlePageChange}
                             paginationComponentOptions={paginationOptions}
                             conditionalRowStyles={conditionalRowStyles}
-                            // onRowClicked={(data) => {
-                            //   detail(data);
-                            //   handleRowClicked(data);
-                            // }}
                             progressComponent={
                                 <div style={{ padding: "24px" }}>
-                                    <Oval
-                                        arialLabel="loading-indicator"
-                                        color="#007bff"
-                                        height={40}
+                                    <InfinitySpin
+                                        width='200'
+                                        color="#4fa94d"
                                     />
                                 </div>
                             }

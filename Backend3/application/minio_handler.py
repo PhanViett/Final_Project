@@ -2,7 +2,6 @@ import os
 import random
 from datetime import datetime, timedelta
 from minio import Minio
-from application.commons.progress import Progress
 
 config = {"bucket": os.getenv("MINIO_BUCKET_NAME")}
 
@@ -22,6 +21,8 @@ class MinioHandler:
         self.access_key = os.getenv("MINIO_ACCESS_KEY")
         self.secret_key = os.getenv("MINIO_SECRET_KEY")
         self.bucket_name = {"bucket": os.getenv("MINIO_BUCKET_NAME")}
+
+        print(os.getenv("MINIO_URL"))
 
         self.client = Minio(self.minio_url, access_key=self.access_key, secret_key=self.secret_key, secure=False)
         self.make_bucket()
@@ -47,8 +48,6 @@ class MinioHandler:
         for bucket_name in self.bucket_name:
             if not self.client.bucket_exists(bucket_name):
                 self.client.make_bucket(bucket_name)
-            else:
-                print("??????")
 
     def presigned_get_object(self, bucket_name, object_name):
         # Request URL expired after 7 days

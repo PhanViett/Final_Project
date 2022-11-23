@@ -76,6 +76,7 @@ class Users(db.Model):
     
     tai_khoan = db.relationship("TaiKhoan", foreign_keys=[tai_khoan_id], backref="nhan_vien")
     records = db.relationship("Records", foreign_keys="Records.user_id", back_populates="users", uselist=False)
+    tintuc = db.relationship("TinTuc", foreign_keys="TinTuc.user_id", back_populates="users", uselist=False)
     assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien", cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))   
 
 

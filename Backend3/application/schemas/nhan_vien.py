@@ -17,6 +17,7 @@ class NhanVienSchema(ma.SQLAlchemyAutoSchema):
     quan_huyen_thuong_tru_id = ma.auto_field()
     xa_phuong_hien_nay_id = ma.auto_field()
     xa_phuong_thuong_tru_id = ma.auto_field()
+    
     class Meta:
         model = Users
         sqla_session = db.session

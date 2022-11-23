@@ -37,7 +37,7 @@ const AppRoutes: FC = () => {
                         <Route path="trang-chu" element={<Homepage />} />
                         <Route path="chan-doan" element={<Diagnostic />} />
                         <Route path="tin-tuc" element={<News />} />
-                        <Route path="tin-tuc/them-moi" element={<BlogCreate />} />
+                        <Route path="tin-tuc/viet-bai" element={<BlogCreate />} />
                         <Route path="tin-tuc/danh-sach" element={<BlogList />} />
 
                     </Route>

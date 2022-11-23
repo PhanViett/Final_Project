@@ -127,6 +127,7 @@ def menu():
 @jwt_required()
 def file_upload():
     a = request.files.getlist("dinh_kem[]")
+    print(a)
     danh_sach_chung_tu_dk, errors = UploadMinio.upload_image_tin_tuc(request.files.getlist("dinh_kem[]"), many=True)
     if danh_sach_chung_tu_dk:
         return danh_sach_chung_tu_dk

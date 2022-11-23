@@ -4,6 +4,7 @@ from application.schemas.record import RecordSchema
 from application.schemas.tinh_thanh import TinhThanhSchema
 from application.schemas.quan_huyen import QuanHuyenSchema
 from application.schemas.xa_phuong import XaPhuongSchema
+from application.schemas.tin_tuc import TinTucSchema
 
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     "RecordSchema",
     "TinhThanhSchema",
     "QuanHuyenSchema",
-    "XaPhuongSchema"
+    "XaPhuongSchema",
+    "TinTucSchema"
 ]

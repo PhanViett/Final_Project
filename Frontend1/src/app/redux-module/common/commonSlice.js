@@ -16,6 +16,9 @@ const initialState = {
   validateTTCN: false,
   validatePVCMVTHN: false,
   isSubmitted: false,
+
+  
+  blogDetail: {}
 };
 
 export const commonSlice = createSlice({
@@ -70,6 +73,11 @@ export const commonSlice = createSlice({
     setIsSubmitted(state, action) {
       state.isSubmitted = action.payload;
     },
+
+
+    setBlogDetail(state, action) {
+      state.blogDetail = action.payload;
+    },
   },
 });
 
@@ -92,3 +100,7 @@ export const selectCheckedValidate = (state) => state.common.checkedValidate;
 export const selectValidateTTCN = (state) => state.common.validateTTCN
 export const selectValidatePVCMVTHN = (state) => state.common.validatePVCMVTHN
 export const selectIsSubmitted = (state) => state.common.isSubmitted
+
+
+export const selectBlogDetail = (state) => state.common.blogDetail
+

@@ -1,3 +1,44 @@
 .ck-editor__editable_inline {
     min-height: 400px;
 }
+
+.ck-editor5-content {
+
+    figure {
+        margin: auto;
+        display: flex;
+        max-width: 50%;
+        flex-direction: column;
+
+        img {
+            display: block;
+            margin: 0 0 0 auto;
+            max-width: 100%;
+        }
+
+        figcaption {
+            font-size: 12px;
+            text-align: center;
+            font-style: italic;
+            margin-top: 6px;
+            margin-bottom: 18px;
+        }
+    }
+
+    .image {
+        display: flex;
+        justify-content: center;
+        
+        img {
+            margin: 0 auto;
+        }
+    }
+
+    .image-style-side {
+        float: right;
+        margin-left: 20px;
+    }
+
+    padding-top: 54px;
+    word-break: break-word;
+}

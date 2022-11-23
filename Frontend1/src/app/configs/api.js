@@ -20,6 +20,7 @@ export default {
     API_QUAN_HUYEN_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/quan-huyen/get-all/",
     API_XA_PHUONG_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/xa-phuong/get-all/",
     API_NOI_CAP_PUBLIC: API_LOCATION_URL + PATH_V2 + "danhmuc/location/CA-tinh-thanh",
+    
     // FILE UPLOAD
     API_FILE_UPLOAD: API_URL + "file/upload",
 
@@ -30,10 +31,17 @@ export default {
     API_QUAN_LY_NGUOI_DUNG_DELETE: API_URL + PATH_V1 + "user-delete",
     API_QUAN_LY_NGUOI_DUNG_INFO: API_URL + PATH_V1 + "user-info",
 
-
     // QUAN LY LICH SU
     API_QUAN_LY_LICH_SU: API_URL + PATH_V1 + "record-get-list",
     API_QUAN_LY_LICH_SU_CREATE: API_URL + PATH_V1 + "record-create",
     API_QUAN_LY_LICH_SU_UPDATE: API_URL + PATH_V1 + "record-update",
-    API_QUAN_LY_LICH_SU_DELETE: API_URL + PATH_V1 + "record-delte",
+    API_QUAN_LY_LICH_SU_DELETE: API_URL + PATH_V1 + "record-delete",
+
+    // QUAN LY TIN TUC
+    API_QUAN_LY_TIN_TUC: API_URL + PATH_V1 + "tin-tuc-get-list",
+    API_QUAN_LY_TIN_TUC_LIST_VIEW: API_URL + PATH_V1 + "tin-tuc-get-list-view",
+    API_QUAN_LY_TIN_TUC_DETAIL: API_URL + PATH_V1 + "tin-tuc-detail",
+    API_QUAN_LY_TIN_TUC_CREATE: API_URL + PATH_V1 + "tin-tuc-create",
+    API_QUAN_LY_TIN_TUC_UPDATE: API_URL + PATH_V1 + "tin-tuc-update",
+    API_QUAN_LY_TIN_TUC_DELETE: API_URL + PATH_V1 + "tin-tuc-delete",
 };
