@@ -1,26 +1,26 @@
-import { enAU } from "date-fns/locale";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { enAU } from "date-fns/locale";
 
-
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import { Form } from "react-bootstrap";
 import { TextField } from "@mui/material";
-import { genderOptions, levelOptions, ynOptions } from "../../../data";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
-import api from "../../../configs/api";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import Select from "react-select";
+import api from "../../../configs/api";
+import { genderOptions, levelOptions, ynOptions } from "../../../data";
+import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
+import { toast } from "react-toastify";
 
 
 export function Diagnostic() {
-    const dispatch = useDispatch()
     const currentUser = useSelector(selectCurrentUser)
 
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     const [tuoi, setTuoi] = useState(new Date());
     const [gioiTinh, setGioiTinh] = useState();
@@ -37,7 +37,9 @@ export function Diagnostic() {
     useEffect(() => {
         getUserInfo();
     }, [])
-
+    useEffect(() => {
+        console.log(form);
+    }, [form])
     const setField = (field, value) => {
         setForm({
             ...form,
@@ -52,27 +54,32 @@ export function Diagnostic() {
 
 
     const getUserInfo = () => {
+        setIsLoading(true)
         axios
             .get(api.API_QUAN_LY_NGUOI_DUNG_INFO + "/" + currentUser.id)
             .then(({ data }) => {
                 if (data) {
-                    handleTuoi(data?.ngay_sinh)
+                    setTuoi(data?.ngay_sinh)
                     handleGioiTinh(data?.gioi_tinh)
                     handleStatics(data)
                     setForm(data)
                 }
             })
-    }
-
-
-    const handleTuoi = (value) => {
-        if (typeof value === "number") {
-            setTuoi(value);
-        } else if (typeof value === "object") {
-            const diff = new Date().getTime() - new Date(value).getTime();
-            setField("tuoi", Math.round(diff / (1000 * 3600 * 24)))
-            setTuoi(value)
-        }
+            .catch((error) => {
+                toast.error(error?.response?.data?.msg, {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    toastId: "error",
+                });
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
     }
 
     const handleGioiTinh = (value) => {
@@ -126,19 +133,88 @@ export function Diagnostic() {
             setField("smoke", data.value)
         } else if (type === "alco") {
             setAlco(data)
-            setField("chalcool", data.value)
+            setField("alco", data.value)
         } else if (type === "activ") {
             setActiv(data)
             setField("active", data.value)
         }
     }
 
-
     const formValidation = () => {
-        const { ho_ten } = form;
+        const newErrors = {};
+        const { ho_ten, weight, height } = form;
 
+        if (!ho_ten || ho_ten === "") newErrors.tuoi = "Họ tên không được bỏ trống!";
+        if (!tuoi || tuoi <= 0) newErrors.tuoi = "Ngày sinh không được bỏ trống!";
+        if (!gioiTinh) newErrors.gioiTinh = "Giới tính không được bỏ trống!"
+        if (!weight || weight === "") newErrors.weight = "Cân nặng không được bỏ trống!"
+        if (!height || height === "") newErrors.height = "Chiều cao không được bỏ trống!"
+        if (!chol) newErrors.chol = "Mức độ cholesterol không được bỏ trống!"
+        if (!gluc) newErrors.gluc = "Mức độ glucose không được bỏ trống!"
+        if (!smoke) newErrors.smoke = "Vui lòng chọn câu trả lời!"
+        if (!alco) newErrors.alco = "Vui lòng chọn câu trả lời!"
+        if (!activ) newErrors.activ = "Vui lòng chọn câu trả lời!"
+
+        return newErrors;
     }
 
+
+    const handleSubmit = () => {
+        const newError = formValidation();
+
+        if (Object.keys(newError).length > 0) {
+            setErrors(newError);
+            console.log(newError);
+        } else {
+            setIsLoading(true);
+
+            const diff = new Date().getTime() - new Date(tuoi).getTime();
+            const day_count = Math.round(diff / (1000 * 3600 * 24))
+
+            const json = {
+                "ho_ten": form?.ho_ten,
+                "ngay_sinh": form?.ngay_sinh,
+                "tuoi": day_count,
+                "gioi_tinh": form?.gioi_tinh,
+                "height": form?.height,
+                "weight": form?.weight,
+                "chol": form?.chol,
+                "gluc": form?.gluc,
+                "smoke": form?.smoke,
+                "alco": form?.alco,
+                "active": form?.active
+            }
+            axios
+                .put(api.API_QUAN_LY_NGUOI_DUNG_STATIC + "/" + currentUser.id, json)
+                .then((data) => {
+
+                })
+                .catch((error) => {
+                    toast.error(error?.response?.data?.msg, {
+                        position: "top-right",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        toastId: "error",
+                    });
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                })
+        }
+    }
+    const handleTuoi = (value) => {
+        if (typeof value === "number") {
+            setTuoi(value);
+        } else if (typeof value === "object") {
+            const diff = new Date().getTime() - new Date(value).getTime();
+            setField("tuoi", )
+            setTuoi(value)
+        }
+    }
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} locale={enAU}>
             <div>
@@ -161,7 +237,7 @@ export function Diagnostic() {
                                         </button>
                                         :
                                         <div>
-                                            <button className="btn btn-success py-0 me-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(false)}>
+                                            <button className="btn btn-success py-0 me-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => {handleSubmit();} }>
                                                 <i className="fas fa-save me-1" style={{ fontSize: "12px" }}></i>Lưu
                                             </button>
                                             <button className="btn btn-secondary py-0 ms-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(false)}>
@@ -197,7 +273,7 @@ export function Diagnostic() {
                                                 maxDate={new Date()}
                                                 inputFormat="dd/MM/yyyy"
                                                 value={tuoi}
-                                                onChange={handleTuoi}
+                                                onChange={(e) => setTuoi(e)}
                                                 renderInput={(params) => <TextField {...params} />}
                                             />
                                         }
@@ -211,7 +287,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={gioiTinh}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={genderOptions}
                                                 placeholder="Chọn giới tính"
                                                 onChange={(e) => handleGioiTinh(e.value)}
@@ -243,8 +319,8 @@ export function Diagnostic() {
                                                 type="text"
                                                 style={inputStyle}
                                                 placeholder="Nhập chiều cao (cm)"
-                                                value={form?.weight != null ? form?.weight : ""}
-                                                onChange={(e) => setField("weight", e.target.value)}
+                                                value={form?.height != null ? form?.height : ""}
+                                                onChange={(e) => setField("height", e.target.value)}
                                             />
                                         }
                                     </div>
@@ -256,7 +332,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={chol}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={levelOptions}
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("chol", e)}
@@ -271,7 +347,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={gluc}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={levelOptions}
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("gluc", e)}
@@ -286,7 +362,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={smoke}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={ynOptions}
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("smoke", e)}
@@ -303,7 +379,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={alco}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={ynOptions}
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("alco", e)}
@@ -318,7 +394,7 @@ export function Diagnostic() {
                                             <Select
                                                 value={activ}
                                                 style={inputStyle}
-                                                closeOnSelect={true}
+                                                closeonselect={true}
                                                 options={ynOptions}
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("activ", e)}

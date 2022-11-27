@@ -9,10 +9,15 @@ import { selectRoleUser } from "../../app/redux-module/auth/authSlice";
 
 
 
-import { QuanLyNguoiDung } from "../modules/apps/admin/quan-ly-nguoi-dung/QuanLyNguoiDung";
 import { QuanLyLichSu } from "../modules/apps/admin/quan-ly-lich-su/QuanLyLichSu";
+import { QuanLyNguoiDung } from "../modules/apps/admin/quan-ly-nguoi-dung/QuanLyNguoiDung";
 import { QuanLyTinTuc } from "../modules/apps/admin/quan-ly-tin-tuc/QuanLyTinTuc";
+import { BlogCreate } from "../modules/apps/user/BlogCreate";
+import { BlogList } from "../modules/apps/user/BlogList";
+import { Diagnostic } from "../modules/apps/user/Diagnostic";
 import { Homepage } from "../modules/apps/user/Homepage";
+import { Info } from "../modules/apps/user/Info";
+import { News } from "../modules/apps/user/News";
 
 const PrivateRoutes = () => {
     const roleUser = useSelector(selectRoleUser);
@@ -31,9 +36,18 @@ const PrivateRoutes = () => {
                 : null}
 
                 <Route path="" element={<Homepage />} />
+                <Route path="trang-chu" element={<Homepage />} />
                 <Route path="admin/quan-ly-nguoi-dung" element={<QuanLyNguoiDung />} />
                 <Route path="admin/quan-ly-lich-su" element={<QuanLyLichSu />} />
                 <Route path="admin/quan-ly-tin-tuc" element={<QuanLyTinTuc />} />
+
+                <Route path="tin-tuc/viet-bai" element={<BlogCreate />} />
+                <Route path="tin-tuc/danh-sach" element={<BlogList />} />
+
+                <Route path="thong-tin-ca-nhan" element={<Info />} />
+                <Route path="chan-doan" element={<Diagnostic />} />
+                <Route path="tin-tuc" element={<News />} />
+
 
                 {/* Page Not Found */}
                 <Route path="*" element={<Navigate to="/error/404" />} />

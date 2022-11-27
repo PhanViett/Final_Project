@@ -53,16 +53,16 @@ class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
         exclude = ("created_at", "updated_at", "deleted_at")
 
 class NhanVienRecordSchema(ma.SQLAlchemySchema):
-    ho_ten = ma.auto_field(dump_only=True)
-    ngay_sinh = ma.auto_field(dump_only=True)
-    gioi_tinh = ma.auto_field(dump_only=True)
-    height = ma.auto_field(dump_only=True)
-    weight = ma.auto_field(dump_only=True)
-    chol = ma.auto_field(dump_only=True)
-    gluc = ma.auto_field(dump_only=True)
-    smoke = ma.auto_field(dump_only=True)
-    alco = ma.auto_field(dump_only=True)
-    active = ma.auto_field(dump_only=True)
+    ho_ten = ma.auto_field()
+    ngay_sinh = ma.auto_field()
+    gioi_tinh = ma.auto_field()
+    height = ma.auto_field()
+    weight = ma.auto_field()
+    chol = ma.auto_field()
+    gluc = ma.auto_field()
+    smoke = ma.auto_field()
+    alco = ma.auto_field()
+    active = ma.auto_field()
 
     class Meta:
         model = Users
@@ -74,7 +74,7 @@ class NguoiDungDisplaySchema(ma.SQLAlchemySchema):
     id = fields.String(dump_only=True)
     ho_ten = fields.String(dump_only=True)
     active = fields.Boolean(dump_only=True)
-    tai_khoan = fields.String(attribute="tai_khoan.tai_khoan", allow_none=True, dump_default=None, dump_only=True)
+    tai_khoan = fields.String(attribute="tai_khoan.tai_khoan")
     email = fields.String(dump_only=True)
     ho = fields.String(dump_only=True)
     ten = fields.String(dump_only=True)

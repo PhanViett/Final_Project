@@ -6,31 +6,36 @@ from application.utils.resource.http_code import HttpCode
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, current_user
 from flask_restful import Resource
+from application.models.nhan_vien import Users
 
 
 class RecordGetList(Resource):
     @ jwt_required()
     def post(self):
         schema = RecordSchema(many=True)
-        query = Records.query.filter()
+        query = Records.query.order_by(Records.created_at.desc())
         data = request.json
         
         if not data:
-            query = query.order_by(Records.created_at.desc())
             return paginate(query, schema), HttpCode.OK
 
-        elif data.get("id"):
-            search_key = data["id"]
-            query = query.filter(Records.user_id == search_key)
+        if data.get("status"):
+            query = query.filter(Records.result == data.get("status"))
 
-        query = query.order_by(Records.created_at.desc())
+        if data.get("id"):
+            query = query.filter(Records.user_id == data.get("id"))
+
+        query = query
         res = paginate(query, schema)
 
         if len(res["results"]) < 1:
-        
             return {
                 "msg": "Người dùng này không có lịch sử chẩn đoán!!"
             }, HttpCode.OK
+        elif len(res["results"]) >= 1:
+            for x in res["results"]:
+                a = Records.query.filter(Records.id == x["id"]).first()
+                x["created_at"] = a.created_at
 
         return res, HttpCode.OK
 

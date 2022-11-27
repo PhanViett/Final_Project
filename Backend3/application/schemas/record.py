@@ -4,21 +4,24 @@ from application.models.record import Records
 
 
 class RecordSchema(ma.SQLAlchemySchema):
-    id = fields.String(dump_only=True)
-    ho_ten = fields.String(attribute="users.ho_ten", dump_only=True)
-    tuoi = fields.String(dump_only=True)
-    gioi_tinh = fields.String(dump_only=True)
-    height = fields.String(dump_only=True)
-    weight = fields.String(dump_only=True)
-    ap_hi = fields.String(dump_only=True)
-    ap_lo = fields.String(dump_only=True)
-    chol = fields.String(dump_only=True)
-    gluc = fields.String(dump_only=True)
-    smoke = fields.String(dump_only=True)
-    alco = fields.String(dump_only=True)
-    active = fields.String(dump_only=True)
-    result = fields.String(dump_only=True)
+    id = ma.auto_field(dump_only=True)
+    user_id = ma.auto_field()
+    ho_ten = fields.String(attribute="users.ho_ten")
+    tuoi = ma.auto_field()
+    gioi_tinh = ma.auto_field()
+    height = ma.auto_field()
+    weight = ma.auto_field()
+    ap_hi = ma.auto_field()
+    ap_lo = ma.auto_field()
+    chol = ma.auto_field()
+    gluc = ma.auto_field()
+    smoke = ma.auto_field()
+    alco = ma.auto_field()
+    active = ma.auto_field()
+    result = ma.auto_field()
 
     class Meta:
         model = Records
         sqla_session = db.session
+        load_instance = True
+

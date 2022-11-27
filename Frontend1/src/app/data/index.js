@@ -1,11 +1,11 @@
 const ynOptions = [
   {
     label: "Có",
-    value: "0"
+    value: 0
   },
   {
     label: "Không",
-    value: "1"
+    value: 1
   }
 ]
 
@@ -28,15 +28,15 @@ const genderOptions = [
 
 const levelOptions = [
   {
-    label: "Normal",
+    label: "Bình thường",
     value: 1
   },
   {
-    label: "Above normal",
+    label: "Hơi cao",
     value: 2
   },
   {
-    label: "Well above normal",
+    label: "Rất cao",
     value: 3
   }
 ]

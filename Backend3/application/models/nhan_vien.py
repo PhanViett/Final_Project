@@ -15,11 +15,13 @@ from application.utils.helper.convert_timestamp_helper import get_current_time
 
 lk_vai_tro_nhan_vien = db.Table(
 "lk_vai_tro_nhan_vien", db.Model.metadata,
-    db.Column("vai_tro_id", UUID(as_uuid=True),  db.ForeignKey('vai_tro.id'), primary_key=True),
-    db.Column("user_id", UUID(as_uuid=True),  db.ForeignKey('users.id'), primary_key=True))
+    db.Column("vai_tro_id", UUID(as_uuid=True), db.ForeignKey('vai_tro.id'), primary_key=True),
+    db.Column("user_id", UUID(as_uuid=True), db.ForeignKey('users.id'), primary_key=True))
 
 class Users(db.Model):
     __tablename__ = "users"
+
+    assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien", cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))   
 
     created_at = db.Column(db.BigInteger, nullable=True)
     updated_at = db.Column(db.BigInteger, nullable=True)
@@ -29,6 +31,8 @@ class Users(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     tai_khoan_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tai_khoan.id"), nullable=True)
+    vai_tro_id = db.Column(UUID(as_uuid=True), db.ForeignKey("vai_tro.id"), nullable=True)
+
     ho = db.Column(db.String(80), nullable=True)
     ten = db.Column(db.String(80), nullable=True)
     ho_ten = db.Column(db.String(80), nullable=True)
@@ -72,12 +76,10 @@ class Users(db.Model):
 
     password = db.Column(db.String, nullable=True)
     status = db.Column(db.Boolean, default=True, nullable=False)
-    vai_tro_id = db.Column(UUID(as_uuid=True), db.ForeignKey("vai_tro.id"), nullable=True)
     
     tai_khoan = db.relationship("TaiKhoan", foreign_keys=[tai_khoan_id], backref="nhan_vien")
     records = db.relationship("Records", foreign_keys="Records.user_id", back_populates="users", uselist=False)
     tintuc = db.relationship("TinTuc", foreign_keys="TinTuc.user_id", back_populates="users", uselist=False)
-    assigned_role = db.relationship("VaiTro", secondary="lk_vai_tro_nhan_vien", cascade="delete",  lazy="subquery", backref=db.backref("users", lazy=True))   
 
 
     def __repr__(self):

@@ -57,11 +57,11 @@ const MasterLayout = () => {
                                         <hr style={{ margin: "2px 0", opacity: "0.08" }} />
                                     </Dropdown.Item>
 
-                                    <Dropdown.Item>
+                                    <Dropdown.Item onClick={() => navigate("/tin-tuc/viet-bai")}>
                                         Tạo bài viết
                                     </Dropdown.Item>
                                     
-                                    <Dropdown.Item>
+                                    <Dropdown.Item onClick={() => navigate("/tin-tuc/danh-sach")}>
                                         Bài viết của tôi
                                     </Dropdown.Item>
                                     

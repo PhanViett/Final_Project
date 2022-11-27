@@ -77,7 +77,13 @@ export function Login() {
             .then(({ data }) => {
                 if (data) {
                     dispatch(authActions.loginSuccess(data));
-                    navigate("/admin/quan-ly-nguoi-dung")
+                    const role = data?.data?.assigned_role[0].ten_en;
+                    if (role && role === "user") {
+                        navigate("trang-chu")
+                    } else {
+                        console.log("?");
+                        navigate("/admin/quan-ly-nguoi-dung")
+                    }
                 }
             })
             .catch((error) => {

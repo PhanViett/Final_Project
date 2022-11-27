@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../../_metronic/assets/custom/table";
 import { useDebounce } from "../../../../../_metronic/helpers";
 import api from "../../../../configs/api";
+import { genderOptions } from "../../../../data";
 
 
 export function QuanLyNguoiDung() {
@@ -51,18 +52,39 @@ export function QuanLyNguoiDung() {
             });
     };
 
-    const getList = ({page_number = page, size = perPage, search_key = searchKey}) => {
+    const getList = ({ page_number = page, size = perPage, search_key = searchKey }) => {
         setIsLoading(true);
         axios
             .post(api.API_QUAN_LY_NGUOI_DUNG + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
-            .then(({ data }) => {
-                if (data) {
-                    setNguoiDungList(data?.results);
-                    setTotalRows(data?.total);
+            .then((data) => {
+                if (data && data?.status === 404) {
+                    setIsLoading(true);
+                    getList(page, perPage, debouncedSearchKey);
+                } else {
+                    data = data?.data;
+                    if (data) {
+                        let temp_data = data?.results
+                        for (let i = 0; i < data?.results.length; i++) {
+                            temp_data[i].stt = i + 1
+                            const gt = genderOptions.find((e) => e.value == temp_data[i].gioi_tinh)
+                            temp_data[i].gioi_tinh = gt ? gt.label : "N/A"
+                        }
+                        setNguoiDungList(temp_data);
+                        setTotalRows(data?.total);
+                    }
                 }
             })
             .catch((error) => {
-
+                toast.error(error?.response?.data?.msg, {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    toastId: "error",
+                });
             })
             .finally(() => {
                 setIsLoading(false);
@@ -71,21 +93,46 @@ export function QuanLyNguoiDung() {
 
     const handlePageChange = (page) => {
         setPage(page);
-        getList({page_number: page});
+        getList({ page_number: page });
     };
 
     const handlePerRowsChange = async (newPerPage, page) => {
+        setIsLoading(true)
         axios
             .post(api.API_QUAN_LY_NGUOI_DUNG + `?page=${page}&per_page=${newPerPage}`, { search_key: searchKey })
-            .then(({ data }) => {
-                if (data) {
-                    setNguoiDungList(data?.results);
-                    setTotalRows(data?.total);
-                    setPerPage(newPerPage);
+            .then((data) => {
+                if (data && data?.status === 404) {
+                    setIsLoading(true);
+                    getList(page, perPage, debouncedSearchKey);
+                } else {
+                    data = data?.data;
+                    if (data) {
+                        let temp_data = data?.results
+                        for (let i = 0; i < data?.results.length; i++) {
+                            temp_data[i].stt = i + 1
+                            const gt = genderOptions.find((e) => e.value == temp_data[i].gioi_tinh)
+                            temp_data[i].gioi_tinh = gt ? gt.label : "N/A"
+                        }
+                        setNguoiDungList(temp_data);
+                        setTotalRows(data?.total);
+                    }
                 }
             })
-            .catch(() => { })
-            .finally(() => { });
+            .catch((error) => {
+                toast.error(error?.response?.data?.msg, {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    toastId: "error",
+                });
+            })
+            .finally(() => {
+                setIsLoading(false)
+            });
     };
 
     const handleReset = async () => {
@@ -154,7 +201,7 @@ export function QuanLyNguoiDung() {
                             progress: undefined,
                             toastId: "error",
                         });
-                        getList({page, perPage, searchKey});
+                        getList({ page, perPage, searchKey });
                         handleReset();
                         closeModal();
                     }
@@ -188,7 +235,7 @@ export function QuanLyNguoiDung() {
                             progress: undefined,
                             toastId: "error",
                         });
-                        getList({page, perPage, searchKey});
+                        getList({ page, perPage, searchKey });
                         handleReset();
                         closeModal();
                     }
@@ -225,7 +272,7 @@ export function QuanLyNguoiDung() {
                         progress: undefined,
                         toastId: "error",
                     });
-                    getList({page, perPage, searchKey});
+                    getList({ page, perPage, searchKey });
                     handleReset();
                     closeModal();
                 }
@@ -250,9 +297,28 @@ export function QuanLyNguoiDung() {
 
     const columns = [
         {
+            name: "STT",
+            selector: (row) => row.stt ? <span>{row?.stt}</span> : <span className="text-danger"> N/A</span>,
+            grow: 1,
+            style: {
+                cursor: "pointer",
+                color: "#202124",
+            },
+            center: true
+        },
+        {
             name: "Tên người dùng",
             selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
+            grow: 5,
+            style: {
+                cursor: "pointer",
+                color: "#202124",
+            },
+        },
+        {
+            name: "Tài khoản",
+            selector: (row) => row.tai_khoan ? <span>{row?.tai_khoan}</span> : <span className="text-danger"> N/A</span>,
+            grow: 4,
             style: {
                 cursor: "pointer",
                 color: "#202124",
@@ -260,28 +326,26 @@ export function QuanLyNguoiDung() {
         },
         {
             name: "Giới tính",
-            selector: (row) => row.gioi_tinh ? <span>{row?.gioi_tinh}</span> : <span className="text-danger"> N/A</span>,
-            grow: 3,
+            selector: (row) => row?.gioi_tinh === "N/A" ? <span>{row?.gioi_tinh}</span> : <span className="text-secondary">{row?.gioi_tinh}</span>,
+            grow: 2,
+            center: true
         },
         {
             name: "Số điện thoại",
             selector: (row) => row.dien_thoai ? <span>{row?.dien_thoai}</span> : <span className="text-danger"> N/A</span>,
-            grow: 2,
+            grow: 3,
+            center: true
         },
         {
             name: "Email",
             selector: (row) => row.email ? <span>{row?.email}</span> : <span className="text-danger"> N/A</span>,
-            grow: 2,
-        },
-        {
-            name: "Trạng thái",
-            selector: (row) => row.active ? <span>{row?.active}</span> : <span className="text-danger"> N/A</span>,
-            grow: 2,
+            grow: 3,
+            center: true
         },
         {
             name: "",
             selector: (row) =>
-                <div style={{ justifyContent: "end" }}>
+                <div>
                     <button className="btn btn-link me-2"
                         onClick={() => {
                             setForm({
@@ -302,7 +366,7 @@ export function QuanLyNguoiDung() {
                     </button>
                 </div>
             ,
-            grow: 2,
+            grow: 1,
         },
     ];
 

@@ -3,13 +3,14 @@ from sqlalchemy import event
 from application.extensions import db
 from sqlalchemy.dialects.postgresql.base import UUID
 from application.utils.helper.convert_timestamp_helper import get_current_time
+from application.commons.commons import CommonModel
 
 
-class Records(db.Model):
+class Records(CommonModel):
     __tablename__ = "records"
 
-    created_at = db.Column(db.BigInteger, nullable=True)
-    updated_at = db.Column(db.BigInteger, nullable=True)
+    # created_at = db.Column(db.BigInteger, nullable=True)
+    # updated_at = db.Column(db.BigInteger, nullable=True)
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True)

@@ -17,7 +17,7 @@ from application.utils.helper.convert_timestamp_helper import get_current_time
 class VaiTro(db.Model):
     __tablename__ = "vai_tro"
 
-    # PROPERTIES
+    # PROPERTIES    
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ten = db.Column(db.String(80), unique=True, nullable=False)
     ten_en = db.Column(db.String, nullable=True)

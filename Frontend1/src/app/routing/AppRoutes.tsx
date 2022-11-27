@@ -10,12 +10,7 @@ import { Logout } from "../modules/apps/auth";
 import { ForgotPassword } from "../modules/apps/auth/components/ForgotPassword";
 import { Login } from "../modules/apps/auth/Login";
 import { Register } from "../modules/apps/auth/Register";
-import { BlogCreate } from "../modules/apps/user/BlogCreate";
-import { BlogList } from "../modules/apps/user/BlogList";
-import { Diagnostic } from "../modules/apps/user/Diagnostic";
 import { Homepage } from "../modules/apps/user/Homepage";
-import { Info } from "../modules/apps/user/Info";
-import { News } from "../modules/apps/user/News";
 import { ErrorsPage } from "../modules/errors/ErrorsPage";
 import { selectCurrentUser } from "../redux-module/auth/authSlice";
 import { PrivateRoutes } from "./PrivateRoutes";
@@ -29,21 +24,6 @@ const AppRoutes: FC = () => {
             <Routes>
                 <Route element={<App />}>
 
-
-
-                    <Route element={<MasterLayout />}>
-                        <Route path="thong-tin-ca-nhan" element={<Info />} />
-
-                        <Route path="trang-chu" element={<Homepage />} />
-                        <Route path="chan-doan" element={<Diagnostic />} />
-                        <Route path="tin-tuc" element={<News />} />
-                        <Route path="tin-tuc/viet-bai" element={<BlogCreate />} />
-                        <Route path="tin-tuc/danh-sach" element={<BlogList />} />
-
-                    </Route>
-
-
-
                     <Route path="dang-nhap/*" element={<Login />} />
                     <Route path="dang-nhap" element={<Login />} />
                     <Route path="dang-ky" element={<Register />} />
@@ -51,16 +31,16 @@ const AppRoutes: FC = () => {
                     <Route path="forgot-password" element={<ForgotPassword />} />
 
                     <Route path="error/*" element={<ErrorsPage />} />
-                    {currentUser ? (
+                    {currentUser ?
                         <>
                             <Route path="/*" element={<PrivateRoutes />} />
                         </>
-                    ) : (
+                        :
                         <>
                             <Route path="dang-nhap/*" element={<Login />} />
                             <Route path="*" element={<Navigate to="/dang-nhap" />} />
                         </>
-                    )}
+                    }
                 </Route>
             </Routes>
             <ToastContainer

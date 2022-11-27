@@ -8,6 +8,7 @@ from application.utils.helper.string_processing_helper import clean_string
 class TinhThanh(db.Model):
 
     __tablename__ = "tinh_thanh"
+    
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ten = db.Column(db.String, nullable=True)
     tenkhongdau = db.Column(db.String, nullable=True)
