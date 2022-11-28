@@ -7,10 +7,11 @@ class TinTucSchema(ma.SQLAlchemyAutoSchema):
     title = ma.auto_field()
     content = ma.auto_field()
     status = ma.auto_field()
-
+    user_id = ma.auto_field()
+    
     class Meta:
         model = TinTuc
         sqla_session = db.session
         load_instance = True
-        exclude = ("created_at", "updated_at", "deleted_at")
+        exclude = ("created_at", "deleted_at", "deleted_by", "deleted")
 

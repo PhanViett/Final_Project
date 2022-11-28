@@ -2,9 +2,14 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import api from "../../../configs/api";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { commonActions } from "../../../redux-module/common/commonSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 export function News() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -67,6 +72,20 @@ export function News() {
             })
     }
 
+    const handleDetail = (id) => {
+        axios
+            .post(api.API_QUAN_LY_TIN_TUC_DETAIL, { "id": id })
+            .then(({ data }) => {
+                if (data) {
+                    console.log(data?.result);
+                    dispatch(commonActions.setBlogDetail(data?.result));
+                    navigate(`/tin-tuc/${id}`)
+                }
+            })
+    }
+
+
+
     return (
         <div className="py-3">
             {isLoading ?
@@ -102,7 +121,7 @@ export function News() {
 
                     <div className="col-3 pe-10">
                         <SkeletonTheme color="#5e6c77" highlightColor="#a9b7c1">
-                            <Skeleton count={1} style={{width: "100%"}} height={180} />
+                            <Skeleton count={1} style={{ width: "100%" }} height={180} />
                         </SkeletonTheme>
                         <SkeletonTheme color="#5e6c77" highlightColor="#a9b7c1">
                             <Skeleton count={1} height={36} />
@@ -115,7 +134,7 @@ export function News() {
 
 
                     <div className="col-12 my-10" style={{ border: "1px solid red", marginLeft: "10.5px", marginRight: "10.5px" }}></div>
-                    
+
                     <div className="col-6 mb-4">
                         <SkeletonTheme color="#5e6c77" highlightColor="#a9b7c1">
                             <Skeleton count={1} width={550} height={293} />
@@ -138,7 +157,7 @@ export function News() {
                         </SkeletonTheme>
                     </div>
 
-                    <div className="col-6 mb-4" style={{marginLeft: "-50px"}}>
+                    <div className="col-6 mb-4" style={{ marginLeft: "-50px" }}>
                         <SkeletonTheme color="#5e6c77" highlightColor="#a9b7c1">
                             <Skeleton count={2} height={36} style={{ width: "108%" }} />
                             <Skeleton count={1} height={36} style={{ width: "90%" }} />
@@ -160,7 +179,7 @@ export function News() {
 
 
                     {/* IMAGE RAITO 1.875 */}
-                    <div className="col-9 pe-5">
+                    <div className="col-9 pe-5" style={{ cursor: "pointer" }} onClick={(e) => { handleDetail(blogFirst?.id) }}>
                         <div>
                             {blogFirst?.thumbnail ?
                                 <img style={{ float: "left", marginRight: "20px" }} width={550} height={293}
@@ -174,9 +193,9 @@ export function News() {
                         <p style={{ textAlign: "justify" }} dangerouslySetInnerHTML={{ __html: blogFirst.short }}></p>
                     </div>
 
-                    <div className="col-3 pe-10">
+                    <div className="col-3 pe-10" style={{ cursor: "pointer" }} onClick={(e) => { handleDetail(blogFirst?.id) }}>
                         <div>
-                            {blogFirst?.thumbnail ?
+                            {blogSecond?.thumbnail ?
                                 <img alt="" style={{ width: "100%" }}
                                     src="https://kenh14cdn.com/thumb_w/620/203336854389633024/2022/11/12/photo-13-1668269617070918309706.jpg" />
                                 :
@@ -193,13 +212,14 @@ export function News() {
 
                     {blogRemain && blogRemain.length > 0 ? blogRemain.map((e, i) => {
                         return (
-                            <div className="col-12 mb-4" key={`remain_${i}`}>
+                            <div className="col-12 mb-4" key={`remain_${i}`} style={{ cursor: "pointer" }} onClick={() => { handleDetail(e?.id) }}>
                                 <div>
                                     <img style={{ float: "left", marginRight: "20px" }} width={550} height={293}
                                         src="https://kenh14cdn.com/thumb_w/620/203336854389633024/2022/11/13/photo-1-16683432741632144016447.jpg" alt="" />
                                 </div>
                                 <p className="font-weight-bold" style={{ fontSize: 22 }}>{blogRemain[i].title}</p>
-                                <p style={{ textAlign: "justify" }} dangerouslySetInnerHTML={{ __html: blogRemain[i].short }}></p>                            </div>
+                                <p style={{ textAlign: "justify" }} dangerouslySetInnerHTML={{ __html: blogRemain[i].short }}></p>
+                            </div>
                         )
                     }) : null}
                 </div>

@@ -18,6 +18,7 @@ import { Diagnostic } from "../modules/apps/user/Diagnostic";
 import { Homepage } from "../modules/apps/user/Homepage";
 import { Info } from "../modules/apps/user/Info";
 import { News } from "../modules/apps/user/News";
+import { BlogDetail } from "../modules/apps/user/BlogDetail";
 
 const PrivateRoutes = () => {
     const roleUser = useSelector(selectRoleUser);
@@ -27,8 +28,8 @@ const PrivateRoutes = () => {
             <Route element={<MasterLayout />}>
                 {/* Redirect to Dashboard after success login/registartion */}
                 
-                <Route path="dang-nhap/*" element={<Navigate to="/dashboard" />}/>
-                <Route path="/dang-nhap" element={<Navigate to="/dashboard" />}/>
+                <Route path="dang-nhap/*" element={<Navigate to="/trang-chu" />}/>
+                <Route path="/dang-nhap" element={<Navigate to="/trang-chu" />}/>
 
                 {roleUser === "user" ? 
                 <Route path="/" element={<Navigate to="" />}
@@ -41,6 +42,7 @@ const PrivateRoutes = () => {
                 <Route path="admin/quan-ly-lich-su" element={<QuanLyLichSu />} />
                 <Route path="admin/quan-ly-tin-tuc" element={<QuanLyTinTuc />} />
 
+                <Route path="tin-tuc/:id" element={<BlogDetail />} />
                 <Route path="tin-tuc/viet-bai" element={<BlogCreate />} />
                 <Route path="tin-tuc/danh-sach" element={<BlogList />} />
 
@@ -50,7 +52,7 @@ const PrivateRoutes = () => {
 
 
                 {/* Page Not Found */}
-                <Route path="*" element={<Navigate to="/error/404" />} />
+                {/* <Route path="*" element={<Navigate to="/error/404" />} /> */}
 
             </Route>
         </Routes>

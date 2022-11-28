@@ -77,37 +77,39 @@ class QuanLyNguoiDungCreate(Resource):
 class QuanLyNguoiDungUpdate(Resource):
     @jwt_required()
     def put(self, id):
-        schema = NhanVienUpdateSchema()
+
+        schema = NhanVienUpdateSchema(partial=True)
         user = Users.query.filter(Users.id == id, Users.status == True).first()
         if user is None: 
             return jsonify({"status": "FAILED", "msg": "Người dùng không tồn tại trong hệ thống"}), HttpCode.BadRequest
 
         req = {
-            "avatar_url": request.json.get('avatar_url'),
-            "ho": request.json.get('ho'),
-            "ten": request.json.get('ten'),
-            "ngay_sinh": request.json.get('ngay_sinh'),
-            "gioi_tinh": request.json.get('gioi_tinh'),
-            "ma_cong_dan": request.json.get('ma_cong_dan'),
-            "ngay_cap": request.json.get('ngay_cap'),
-            "noi_cap": request.json.get('noi_cap'),
-            "dien_thoai": request.json.get('dien_thoai'),
-            "email": request.json.get('email'),
-            "tinh_thanh_hien_nay_id": request.json.get('tinh_thanh_hien_nay_id'),
-            "quan_huyen_hien_nay_id": request.json.get('quan_huyen_hien_nay_id'),
-            "xa_phuong_hien_nay_id": request.json.get('xa_phuong_hien_nay_id'),
-            "so_nha_hien_nay": request.json.get('so_nha_hien_nay'),
-            "tinh_thanh_thuong_tru_id": request.json.get('tinh_thanh_thuong_tru_id'),
-            "quan_huyen_thuong_tru_id": request.json.get('quan_huyen_thuong_tru_id'),
-            "xa_phuong_thuong_tru_id": request.json.get('xa_phuong_thuong_tru_id'),
-            "so_nha_thuong_tru": request.json.get('so_nha_thuong_tru'),
+            "avatar_url": request.form.get('avatar_url'),
+            "ho": request.form.get('ho'),
+            "ten": request.form.get('ten'),
+            "ngay_sinh": request.form.get('ngay_sinh'),
+            "gioi_tinh": request.form.get('gioi_tinh'),
+            "ma_cong_dan": request.form.get('ma_cong_dan'),
+            "ngay_cap": request.form.get('ngay_cap'),
+            "noi_cap": request.form.get('noi_cap'),
+            "dien_thoai": request.form.get('dien_thoai'),
+            "email": request.form.get('email'),
+            "tinh_thanh_hien_nay_id": request.form.get('tinh_thanh_hien_nay_id'),
+            "quan_huyen_hien_nay_id": request.form.get('quan_huyen_hien_nay_id'),
+            "xa_phuong_hien_nay_id": request.form.get('xa_phuong_hien_nay_id'),
+            "so_nha_hien_nay": request.form.get('so_nha_hien_nay'),
+            "tinh_thanh_thuong_tru_id": request.form.get('tinh_thanh_thuong_tru_id'),
+            "quan_huyen_thuong_tru_id": request.form.get('quan_huyen_thuong_tru_id'),
+            "xa_phuong_thuong_tru_id": request.form.get('xa_phuong_thuong_tru_id'),
+            "so_nha_thuong_tru": request.form.get('so_nha_thuong_tru'),
+
         }
        
         user = schema.load(req, instance=user)
-
+        
         db.session.commit()    
 
-        return {"status": "SUCCESS", "msg": "Cập nhật người dùng thành công"}, HttpCode.Created
+        return {"status": "SUCCESS", "msg": "Cập nhật người dùng thành công", "results": schema.dump(user)}, HttpCode.Created
 
 
 class QuanLyNguoiDungDelete(Resource):
@@ -143,20 +145,18 @@ class UpdateUserStatic(Resource):
         user = Users.query.filter(Users.id == id, Users.status == True).first()
 
         req = {
-            "ho_ten": request.json.get("ho_ten"),
-            "ngay_sinh": request.json.get("ngay_sinh"),
-            "tuoi": request.json.get("tuoi"),
-            "gioi_tinh": request.json.get("gioi_tinh"),
-            "height": request.json.get("height"),
-            "weight": request.json.get("weight"),
-            "chol": request.json.get("chol"),
-            "gluc": request.json.get("gluc"),
-            "smoke": request.json.get("smoke"),
-            "alco": request.json.get("alco"),
-            "active": request.json.get("active")
+            "height": request.form.get('height'),
+            "weight": request.form.get('weight'),
+            "tuoi": request.form.get('tuoi'),
+            "gioi_tinh": request.form.get('gioi_tinh'),
+            "chol": request.form.get('chol'),
+            "gluc": request.form.get('gluc'),
+            "smoke": request.form.get('smoke'),
+            "alco": request.form.get('alco'),
+            "active": request.form.get('active'),
         }
 
         user = schema.load(req, instance=user)
-        db.commit()
+        db.session.commit()
 
-        return {"status": "SUCCESS", "msg": "Cập nhật thông tin thành công"}, HttpCode.OK
+        return {"status": "SUCCESS", "msg": "Cập nhật thông tin thành công", "results": schema.dump(user)}, HttpCode.OK

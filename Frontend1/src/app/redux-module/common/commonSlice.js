@@ -18,7 +18,7 @@ const initialState = {
   isSubmitted: false,
 
   
-  blogDetail: {}
+  blogDetail: undefined
 };
 
 export const commonSlice = createSlice({

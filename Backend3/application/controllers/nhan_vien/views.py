@@ -15,7 +15,7 @@ def register_views():
     api.add_resource(QuanLyNguoiDungUpdate, "/user-update/<id>", endpoint="user-update")
     api.add_resource(QuanLyNguoiDungDelete, "/user-delete/<id>", endpoint="user-delete")
     api.add_resource(GetUserInfo, "/user-info/<id>", endpoint="user-info")
-    api.add_resource(UpdateUserStatic, "user-static/<id>", endpoint="user-static")
+    api.add_resource(UpdateUserStatic, "/user-static/<id>", endpoint="user-static")
 
 
 @blueprint.errorhandler(ValidationError)

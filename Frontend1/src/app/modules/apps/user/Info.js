@@ -15,7 +15,7 @@ import { compareDate } from "../../../../_metronic/helpers";
 import { PageTitle } from "../../../../_metronic/layout/core";
 import api from "../../../configs/api";
 import { genderOptions } from "../../../data";
-import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
+import { authActions, authSlice, selectCurrentUser } from "../../../redux-module/auth/authSlice";
 
 
 export function Info() {
@@ -25,6 +25,7 @@ export function Info() {
 
     const [form, setForm] = useState({})
     const [errors, setErrors] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
     const [ngaySinh, setNgaySinh] = useState();
     const [ngayCap, setNgayCap] = useState();
@@ -325,9 +326,22 @@ export function Info() {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true)
+
         const newErrors = findFormErrors();
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            setIsLoading(false);
+            toast.error("Vui lòng nhập đầy đủ thông tin trước khi cập nhật", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                toastId: "error",
+            });
         } else {
             const {
                 ho,
@@ -375,6 +389,7 @@ export function Info() {
                         progress: undefined,
                         toastId: "success",
                     });
+                dispatch(authActions.setCurrentUser(data?.results))
                 })
                 .catch((error) => {
                     toast.error(error?.data?.errors, {
@@ -389,6 +404,7 @@ export function Info() {
                     });
                 })
                 .finally(() => {
+                    setIsLoading(false);
                 });
         }
     }
@@ -711,26 +727,43 @@ export function Info() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-12 text-center mt-5">
-                            <button
-                                className="btn btn-secondary btn-trolai text-uppercase"
-                                onClick={() => navigate(-1)}
-                            >
-                                Trở về
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    onSubmit(e);
-                                }}
-                                className="btn btn-primary text-uppercase"
-                                style={{ marginLeft: "10px" }}
-                            >
-                                Lưu thông tin
-                            </button>
-                        </div>
+
+                        {isLoading ? (
+                            <div className="col-12 text-center mt-5">
+
+                                <button className="btn btn-link">
+                                    <span
+                                        className="indicator-progress"
+                                        style={{ display: "block" }}
+                                    >
+                                        Vui lòng chờ...
+                                        <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="col-12 text-center mt-5">
+                                <button
+                                    className="btn btn-secondary btn-trolai text-uppercase"
+                                    onClick={() => navigate(-1)}
+                                >
+                                    Trở về
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        onSubmit(e);
+                                    }}
+                                    className="btn btn-primary text-uppercase"
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Lưu thông tin
+                                </button>
+                            </div>
+                        )}
+
                     </div>
                 </div>
-            </div>
-        </LocalizationProvider>
+            </div >
+        </LocalizationProvider >
     )
 }

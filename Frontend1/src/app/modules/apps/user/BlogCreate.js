@@ -27,11 +27,10 @@ export function BlogCreate() {
     const URLUpload = api.API_FILE_UPLOAD
 
     useEffect(() => {
-        if (Object.keys(blogDetail).length > 0) {
+        if (blogDetail && Object.keys(blogDetail).length > 0) {
             setTitleValue(blogDetail?.title)
             setEditorValue(blogDetail?.content)
         }
-        console.log(blogDetail);
     }, [blogDetail])
 
     const config = {

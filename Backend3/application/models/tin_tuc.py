@@ -55,4 +55,4 @@ def on_update_trigger(mapper, connection, target: TinTuc):
 @event.listens_for(TinTuc, "before_update")
 def on_update_trigger(mapper, connection, target):
     target.updated_at = get_current_time("int")
-    target.updated_at = current_user.id if current_user else None
+

@@ -1,9 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import api from "../../../configs/api";
+import { commonActions } from "../../../redux-module/common/commonSlice";
 
 export function Homepage() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate
+    ();
 
     const [blogFirst, setBlogFirst] = useState([]);
     const [blogRemain, setBlogRemain] = useState([]);
@@ -12,6 +18,19 @@ export function Homepage() {
     useEffect(() => {
         getList();
     }, [])
+
+
+    const handleDetail = (id) => {
+        axios
+            .post(api.API_QUAN_LY_TIN_TUC_DETAIL, { "id": id })
+            .then(({ data }) => {
+                if (data) {
+                    console.log(data?.result);
+                    dispatch(commonActions.setBlogDetail(data?.result));
+                    navigate(`/tin-tuc/${id}`)
+                }
+            })
+    }
 
     const getList = () => {
         setIsLoading(true);
@@ -125,8 +144,8 @@ export function Homepage() {
                         </div>
                     </div>
                     :
-                    <div className="row">
-                        <div className="col-7">
+                    <div className="row" onClick={() => handleDetail(blogFirst?.id)}>
+                        <div className="col-7" style={{cursor: "pointer"}}>
                             {blogFirst?.thumbnail ?
                                 <img alt="" style={{ width: "100%" }} height={320} src="/media/blank-image.jpg" />
                                 :
@@ -134,8 +153,8 @@ export function Homepage() {
                             }
                         </div>
                         <div className="col-5">
-                            <label className="font-weight-bold mb-6" style={{ fontSize: "28px" }}>{blogFirst?.title}</label> <br />
-                            <label dangerouslySetInnerHTML={{ __html: blogFirst?.short }} style={{ fontSize: 15 }}></label>
+                            <label className="font-weight-bold mb-6" style={{ fontSize: "28px", cursor: "pointer" }}>{blogFirst?.title}</label> <br />
+                            <label dangerouslySetInnerHTML={{ __html: blogFirst?.short }} style={{ fontSize: 15, cursor: "pointer" }}></label>
                         </div>
                     </div>
                 }
@@ -184,7 +203,7 @@ export function Homepage() {
                     </>
                     :
                     <>
-                        <div className="row mb-4">
+                        <div className="row mb-4" style={{ cursor: "pointer" }} onClick={() => handleDetail(blogRemain[0].id)}>
                             <div className="col-4">
                                 {blogRemain[0]?.thumbnail ?
                                     <img alt="" height={46} width={46} src="/media/blank-image.jpg" />
@@ -193,12 +212,12 @@ export function Homepage() {
                                 }
                             </div>
                             <div className="col-8">
-                                <label className="font-weight-bold mb-4" style={{ fontSize: "20px" }}>{blogRemain[0]?.title}</label> <br />
-                                <label dangerouslySetInnerHTML={{ __html: blogRemain[0]?.short }} style={{ fontSize: 15 }}></label>
+                                <label className="font-weight-bold mb-4" style={{ fontSize: "20px", cursor: "pointer" }}>{blogRemain[0]?.title}</label> <br />
+                                <label dangerouslySetInnerHTML={{ __html: blogRemain[0]?.short }} style={{ fontSize: 15, cursor: "pointer" }}></label>
                             </div>
                         </div>
 
-                        <div className="row">
+                        <div className="row" style={{ cursor: "pointer" }}>
                             <div className="col-4">
                                 {blogRemain[1]?.thumbnail ?
                                     <img alt="" height={46} width={46} src="/media/blank-image.jpg" />
@@ -207,8 +226,8 @@ export function Homepage() {
                                 }
                             </div>
                             <div className="col-8">
-                                <label className="font-weight-bold mb-4" style={{ fontSize: "20px" }}>{blogRemain[1]?.title}</label> <br />
-                                <label dangerouslySetInnerHTML={{ __html: blogRemain[1]?.short }} style={{ fontSize: 15 }}></label>
+                                <label className="font-weight-bold mb-4" style={{ fontSize: "20px", cursor: "pointer" }}>{blogRemain[1]?.title}</label> <br />
+                                <label dangerouslySetInnerHTML={{ __html: blogRemain[1]?.short }} style={{ fontSize: 15, cursor: "pointer" }}></label>
                             </div>
                         </div>
                     </>

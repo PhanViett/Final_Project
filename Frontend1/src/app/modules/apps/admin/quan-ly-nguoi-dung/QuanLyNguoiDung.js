@@ -257,9 +257,9 @@ export function QuanLyNguoiDung() {
         }
     }
 
-    const handleDelete = () => {
+    const handleDelete = (id) => {
         axios
-            .delete(api.API_QUAN_LY_NGUOI_DUNG_DELETE + "/" + selectedId)
+            .delete(api.API_QUAN_LY_NGUOI_DUNG_DELETE + "/" + id)
             .then(({ data }) => {
                 if (data) {
                     toast.success("Xóa người dùng thành công", {
@@ -361,7 +361,7 @@ export function QuanLyNguoiDung() {
                         }}>
                         <i className="fas fa-edit text-primary"></i>
                     </button>
-                    <button className="btn btn-link ms-2" onClick={() => handleDelete()}>
+                    <button className="btn btn-link ms-2" onClick={() => {setSelectedId(row?.id); handleDelete(row?.id)}}>
                         <i className="fas fa-trash-alt text-danger"></i>
                     </button>
                 </div>
@@ -382,7 +382,7 @@ export function QuanLyNguoiDung() {
                     <div className="col-8 mt-4 mb-6 ">
                         <Form.Control
                             type="text"
-                            placeholder="Nhập tên người dùng"
+                            placeholder="Nhập từ khóa tìm kiếm..."
                             style={{ fontSize: 14, fontWeight: 400, height: "38px", width: "320px" }}
                             onChange={(e) => setSearchKey(e.target.value)}
                         />

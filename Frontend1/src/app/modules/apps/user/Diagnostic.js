@@ -7,18 +7,20 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import api from "../../../configs/api";
 import { genderOptions, levelOptions, ynOptions } from "../../../data";
-import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
+import { authActions, selectCurrentUser } from "../../../redux-module/auth/authSlice";
 import { toast } from "react-toastify";
 
 
 export function Diagnostic() {
-    const currentUser = useSelector(selectCurrentUser)
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
 
     const [form, setForm] = useState({});
+    const [datas, setDatas] = useState({});
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
@@ -59,6 +61,7 @@ export function Diagnostic() {
             .get(api.API_QUAN_LY_NGUOI_DUNG_INFO + "/" + currentUser.id)
             .then(({ data }) => {
                 if (data) {
+                    setDatas(data)
                     setTuoi(data?.ngay_sinh)
                     handleGioiTinh(data?.gioi_tinh)
                     handleStatics(data)
@@ -159,40 +162,52 @@ export function Diagnostic() {
     }
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        setIsLoading(true);
         const newError = formValidation();
 
         if (Object.keys(newError).length > 0) {
             setErrors(newError);
-            console.log(newError);
+            setIsLoading(false);
         } else {
-            setIsLoading(true);
 
             const diff = new Date().getTime() - new Date(tuoi).getTime();
             const day_count = Math.round(diff / (1000 * 3600 * 24))
 
-            const json = {
-                "ho_ten": form?.ho_ten,
-                "ngay_sinh": form?.ngay_sinh,
-                "tuoi": day_count,
-                "gioi_tinh": form?.gioi_tinh,
-                "height": form?.height,
-                "weight": form?.weight,
-                "chol": form?.chol,
-                "gluc": form?.gluc,
-                "smoke": form?.smoke,
-                "alco": form?.alco,
-                "active": form?.active
-            }
-            axios
-                .put(api.API_QUAN_LY_NGUOI_DUNG_STATIC + "/" + currentUser.id, json)
-                .then((data) => {
+            const json = new FormData();
 
+            await json.append("ho_ten", form?.ho_ten.toUpperCase());
+            await json.append("ngay_sinh", form?.ngay_sinh);
+            await json.append("tuoi", day_count);
+            await json.append("gioi_tinh", form?.gioi_tinh);
+            await json.append("height", form?.height);
+            await json.append("weight", form?.weight);
+            await json.append("chol", Number(form?.chol));
+            await json.append("gluc", Number(form?.gluc));
+            await json.append("smoke", Number(form?.smoke));
+            await json.append("alco", Number(form?.alco));
+            await json.append("active", Number(form?.active));
+
+
+            axios
+                .put(api.API_QUAN_LY_NGUOI_DUNG_STATIC + "/" + form?.id, json)
+                .then(({ data }) => {
+                    toast.success("Cập nhật thông tin thành công", {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        toastId: "success",
+                    });
+                    dispatch(authActions.setCurrentUser(data?.results))
                 })
                 .catch((error) => {
-                    toast.error(error?.response?.data?.msg, {
+                    toast.error(error?.data?.errors, {
                         position: "top-right",
-                        autoClose: 1000,
+                        autoClose: 2000,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -203,18 +218,29 @@ export function Diagnostic() {
                 })
                 .finally(() => {
                     setIsLoading(false);
-                })
+                });
+
         }
     }
-    const handleTuoi = (value) => {
-        if (typeof value === "number") {
-            setTuoi(value);
-        } else if (typeof value === "object") {
-            const diff = new Date().getTime() - new Date(value).getTime();
-            setField("tuoi", )
-            setTuoi(value)
-        }
+
+    // const handleTuoi = (value) => {
+    //     if (typeof value === "number") {
+    //         setTuoi(value);
+    //     } else if (typeof value === "object") {
+    //         const diff = new Date().getTime() - new Date(value).getTime();
+    //         setField("tuoi", )
+    //         setTuoi(value)
+    //     }
+    // }
+
+    const onReset = () => {
+        setErrors({})
+        setForm(datas)
+        handleStatics(datas)
+        setTuoi(datas?.ngay_sinh)
+        handleGioiTinh(datas?.gioi_tinh)
     }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} locale={enAU}>
             <div>
@@ -226,29 +252,35 @@ export function Diagnostic() {
                                     <h4 className="fw-bold">CHẨN ĐOÁN TÌNH TRẠNG</h4>
                                 </div>
 
-                                <div className="col-9 mt-8">
+                                <div className="col-6 mt-8">
                                     <h5 className="fw-bold">Thông tin hiện tại</h5>
                                 </div>
 
-                                <div className="col-3 mb-10 text-end">
-                                    {isUpdate === false ?
-                                        <button className="btn btn-primary py-0" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(true)}>
-                                            <i className="fas fa-edit me-1" style={{ fontSize: "12px" }}></i>Cập nhật
-                                        </button>
-                                        :
+                                <div className="col-6 mb-10 text-end">
+                                    {isUpdate == true ?
                                         <div>
-                                            <button className="btn btn-success py-0 me-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => {handleSubmit();} }>
+                                            <button className="btn btn-success py-0 me-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => { setIsUpdate(false); handleSubmit(); }}>
                                                 <i className="fas fa-save me-1" style={{ fontSize: "12px" }}></i>Lưu
                                             </button>
-                                            <button className="btn btn-secondary py-0 ms-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(false)}>
+                                            <button className="btn btn-secondary py-0 ms-2" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => { setIsUpdate(false); onReset() }}>
                                                 <i className="fas fa-arrow-right me-1" style={{ fontSize: "12px" }}></i>Quay lại
                                             </button>
                                         </div>
+                                        :
+                                        isLoading == false ?
+                                            <button className="btn btn-primary py-0" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(true)}>
+                                                <i className="fas fa-edit me-1" style={{ fontSize: "12px" }}></i>Cập nhật
+                                            </button>
+                                        :
+                                            <button className="btn btn-link" style={{ fontSize: "13px", height: "38px", width: "130px" }}>
+                                                <span className="indicator-progress" style={{ display: "block",  fontSize: 12 }} >
+                                                    Vui lòng chờ...
+                                                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                </span>
+                                            </button>
                                     }
 
                                 </div>
-
-
                                 <div className="row mx-1 mb-4">
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Họ tên: </span>
@@ -261,7 +293,8 @@ export function Diagnostic() {
                                                 style={{ fontSize: 14, fontWeight: 400, height: 40, backgroundColor: "#fff" }}
                                                 disabled={true}
                                             />
-                                        }
+                                        } {errors?.password ? (<span className="text-danger">{errors?.password}</span>) : ("")}
+
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Ngày sinh: </span>
@@ -276,7 +309,8 @@ export function Diagnostic() {
                                                 onChange={(e) => setTuoi(e)}
                                                 renderInput={(params) => <TextField {...params} />}
                                             />
-                                        }
+                                        } {errors?.tuoi ? (<span className="text-danger">{errors?.tuoi}</span>) : ("")}
+
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Giới tính: </span>
@@ -292,7 +326,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn giới tính"
                                                 onChange={(e) => handleGioiTinh(e.value)}
                                             />
-                                        }
+                                        } {errors?.gioiTinh ? (<span className="text-danger">{errors?.gioiTinh}</span>) : ("")}
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Cân nặng: </span>
@@ -306,7 +340,7 @@ export function Diagnostic() {
                                                 value={form?.weight != null ? form?.weight : ""}
                                                 onChange={(e) => setField("weight", e.target.value)}
                                             />
-                                        }
+                                        } {errors?.weight ? (<span className="text-danger">{errors?.weight}</span>) : ("")}
                                     </div>
                                 </div>
                                 <div className="row mx-1 mb-4">
@@ -322,7 +356,7 @@ export function Diagnostic() {
                                                 value={form?.height != null ? form?.height : ""}
                                                 onChange={(e) => setField("height", e.target.value)}
                                             />
-                                        }
+                                        } {errors?.height ? (<span className="text-danger">{errors?.height}</span>) : ("")}
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Cholesterol: </span>
@@ -337,7 +371,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("chol", e)}
                                             />
-                                        }
+                                        } {errors?.chol ? (<span className="text-danger">{errors?.chol}</span>) : ("")}
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Glucose: </span>
@@ -352,7 +386,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("gluc", e)}
                                             />
-                                        }
+                                        } {errors?.gluc ? (<span className="text-danger">{errors?.gluc}</span>) : ("")}
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Smoke: </span>
@@ -367,7 +401,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("smoke", e)}
                                             />
-                                        }
+                                        } {errors?.smoke ? (<span className="text-danger">{errors?.smoke}</span>) : ("")}
                                     </div>
                                 </div>
                                 <div className="row mx-1 mb-4">
@@ -384,7 +418,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("alco", e)}
                                             />
-                                        }
+                                        } {errors?.alco ? (<span className="text-danger">{errors?.alco}</span>) : ("")}
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Activity: </span>
@@ -399,7 +433,7 @@ export function Diagnostic() {
                                                 placeholder="Chọn mức độ"
                                                 onChange={(e) => handleSelectes("activ", e)}
                                             />
-                                        }
+                                        } {errors?.activ ? (<span className="text-danger">{errors?.activ}</span>) : ("")}
                                     </div>
                                 </div>
 

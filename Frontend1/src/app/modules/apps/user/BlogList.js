@@ -43,7 +43,7 @@ export function BlogList() {
                         list[x].stt = x + 1;
                     }
                     setBlogList(list);
-                    setTotalRows(data?.totalRows)
+                    setTotalRows(data?.total)
                 }
             })
             .catch((error) => {
@@ -76,7 +76,7 @@ export function BlogList() {
                         list[x].stt = x + 1;
                     }
                     setBlogList(list)
-                    setTotalRows(data?.totalRows)``
+                    setTotalRows(data?.total)
                 }
             })
             .catch((error) => {

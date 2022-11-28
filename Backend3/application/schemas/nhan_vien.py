@@ -45,7 +45,6 @@ class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
     xa_phuong_thuong_tru_id = ma.auto_field()
     so_nha_thuong_tru = ma.auto_field()
 
-
     class Meta:
         model = Users
         sqla_session = db.session
@@ -53,8 +52,10 @@ class NhanVienUpdateSchema(ma.SQLAlchemyAutoSchema):
         exclude = ("created_at", "updated_at", "deleted_at")
 
 class NhanVienRecordSchema(ma.SQLAlchemySchema):
+    id = ma.auto_field(dump_only=True)
     ho_ten = ma.auto_field()
     ngay_sinh = ma.auto_field()
+    tuoi = ma.auto_field()
     gioi_tinh = ma.auto_field()
     height = ma.auto_field()
     weight = ma.auto_field()

@@ -210,20 +210,12 @@ export function QuanLyLichSu() {
                     <div className="col-3 mt-4 mb-10">
                         <Form.Control
                             type="text"
-                            placeholder="Nhập tên người dùng"
+                            placeholder="Nhập từ khóa tìm kiếm..."
                             style={{ fontSize: 14, fontWeight: 400 }}
                             onChange={(e) => setSearchKey(e.target.value)}
                         />
                     </div>
-                    <div className="col-3 mt-4 mb-10">
-                        <Select
-                            placeholder="Chọn quận huyện"
-                            value={selected}
-                            options={options}
-                            onChange={(values) => handleSelect(values)}
-                            closeonselect={true}
-                        />
-                    </div>
+
 
                     <div className="col-12 mt-6">
                         <DataTable

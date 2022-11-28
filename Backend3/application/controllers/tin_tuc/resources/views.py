@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import jsonify, request
 from application.extensions import db
 from application.models.tin_tuc import TinTuc
+from application.models.nhan_vien import Users
 from application.commons.pagination import paginate
 from application.schemas.tin_tuc import TinTucSchema
 from application.utils.resource.http_code import HttpCode
@@ -33,6 +34,13 @@ class TinTucGetList(Resource):
 
         if len(res["results"]) < 1:
             return {"status": "SUCCESS", "msg": "No data"}, HttpCode.BadRequest
+        elif len(res["results"]) > 0:
+            for x in res["results"]:
+                print("=====>", x)
+
+                data = Users.query.filter(Users.id == x["user_id"]).first()
+                if data is not None:
+                    x["ho_ten"] = data.ho_ten
 
         return res, HttpCode.OK
 

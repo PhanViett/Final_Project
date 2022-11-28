@@ -15,7 +15,7 @@ export function QuanLyTinTuc() {
 
 
     const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(1);
+    const [perPage, setPerPage] = useState(10);
     const [totalRows, setTotalRows] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -68,28 +68,37 @@ export function QuanLyTinTuc() {
         return newErrors
     }
 
-    const getList = (page_number = page, size = perPage, search_key = searchKey) => {
+    const getList = ({page_number = page, size = perPage, search_key = searchKey}) => {
         axios
-            .post(api.API_QUAN_LY_NGUOI_DUNG + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
+            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
             .then(({ data }) => {
                 if (data) {
+                    let temp_data = data?.results
+                    for (let i = 0; i < data?.results.length; i++) {
+                        temp_data[i].stt = i + 1
+                    }
                     setTinTucList(data?.results)
+                    setTotalRows(data?.total)
                 }
             })
     }
 
     const handlePageChange = (page) => {
         setPage(page);
-        getList({ page_number: page });
+        getList({page_number: page});
     };
 
     const handlePerRowsChange = async (newPerPage, page) => {
         axios
-            .post(api.API_QUAN_LY_NGUOI_DUNG, {})
+            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page}&per_page=${newPerPage}`, { search_key: searchKey })
             .then(({ data }) => {
                 if (data) {
-                    setTinTucList(data?.results);
-                    setPerPage(newPerPage);
+                    let temp_data = data?.results
+                    for (let i = 0; i < data?.results.length; i++) {
+                        temp_data[i].stt = i + 1
+                    }
+                    setTinTucList(data?.results)
+                    setTotalRows(data?.total)
                 }
             })
             .catch(() => { })
@@ -120,45 +129,28 @@ export function QuanLyTinTuc() {
 
     const columns = [
         {
+            name: "STT",
+            selector: (row) => row.stt ? <span>{row?.stt}</span> : <span className="text-danger"> N/A</span>,
+            grow: 1,
+            style: {
+                cursor: "pointer",
+                color: "#202124",
+            },
+            center: true
+        },
+        {
             name: "Tên người dùng",
             selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
+            grow: 2,
             style: {
                 cursor: "pointer",
                 color: "#202124",
             },
         },
         {
-            name: "Tên người dùng",
-            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
-            style: {
-                cursor: "pointer",
-                color: "#202124",
-            },
-        },
-        {
-            name: "Tên người dùng",
-            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
-            style: {
-                cursor: "pointer",
-                color: "#202124",
-            },
-        },
-        {
-            name: "Tên người dùng",
-            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
-            style: {
-                cursor: "pointer",
-                color: "#202124",
-            },
-        },
-        {
-            name: "Tên người dùng",
-            selector: (row) => row.ho_ten ? <span>{row?.ho_ten}</span> : <span className="text-danger"> N/A</span>,
-            grow: 8,
+            name: "Tiêu đề",
+            selector: (row) => row.title ? <span>{row?.title}</span> : <span className="text-danger"> N/A</span>,
+            grow: 10,
             style: {
                 cursor: "pointer",
                 color: "#202124",
@@ -172,7 +164,7 @@ export function QuanLyTinTuc() {
                     <button className="btn btn-link"><i className="fas fa-trash mx-2 text-danger"></i></button>
                 </div>
             ,
-            grow: 8,
+            grow: 1,
             style: {
                 cursor: "pointer",
                 color: "#202124",

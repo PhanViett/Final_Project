@@ -29,7 +29,7 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false);
-  const { saveAuth, setCurrentUser, setRoleUser } = useAuth();
+  // const { saveAuth, setCurrentUser, setRoleUser } = useAuth();
 
   const formik = useFormik({
     initialValues,
@@ -39,12 +39,12 @@ export function Login() {
       try {
         const { data: auth } = await login(values.email, values.password);
         console.log("log auth : " + auth);
-        saveAuth(auth);
+        // saveAuth(auth);
         const { data: user } = await getUserByToken(auth.access_token);
-        setCurrentUser(user);
-        setRoleUser(user?.assigned_role);
+        // setCurrentUser(user);
+        // setRoleUser(user?.assigned_role);
       } catch (error: any) {
-        saveAuth(undefined);
+        // saveAuth(undefined);
         setStatus("The login detail is incorrect");
         setSubmitting(false);
         setLoading(false);
