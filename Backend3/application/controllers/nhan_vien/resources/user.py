@@ -46,12 +46,12 @@ class QuanLyNguoiDungCreate(Resource):
     @jwt_required()
     def post(self):
         
-        ho = request.json.get('ho')
-        ten = request.json.get('ten')
-        tai_khoan = request.json.get('tai_khoan')
-        mat_khau = request.json.get('mat_khau')
-        email = request.json.get('email')
-        dien_thoai = request.json.get('dien_thoai')
+        ho = request.form.get('ho')
+        ten = request.form.get('ten')
+        tai_khoan = request.form.get('tai_khoan')
+        mat_khau = request.form.get('mat_khau')
+        email = request.form.get('email')
+        dien_thoai = request.form.get('dien_thoai')
         
         is_exist = TaiKhoan.query.filter(TaiKhoan.tai_khoan == tai_khoan).first()
 
@@ -82,7 +82,7 @@ class QuanLyNguoiDungUpdate(Resource):
         user = Users.query.filter(Users.id == id, Users.status == True).first()
         if user is None: 
             return jsonify({"status": "FAILED", "msg": "Người dùng không tồn tại trong hệ thống"}), HttpCode.BadRequest
-
+        a = request
         req = {
             "avatar_url": request.form.get('avatar_url'),
             "ho": request.form.get('ho'),
@@ -102,7 +102,6 @@ class QuanLyNguoiDungUpdate(Resource):
             "quan_huyen_thuong_tru_id": request.form.get('quan_huyen_thuong_tru_id'),
             "xa_phuong_thuong_tru_id": request.form.get('xa_phuong_thuong_tru_id'),
             "so_nha_thuong_tru": request.form.get('so_nha_thuong_tru'),
-
         }
        
         user = schema.load(req, instance=user)
@@ -147,6 +146,7 @@ class UpdateUserStatic(Resource):
         req = {
             "height": request.form.get('height'),
             "weight": request.form.get('weight'),
+            "ngay_sinh": request.form.get('ngay_sinh'),
             "tuoi": request.form.get('tuoi'),
             "gioi_tinh": request.form.get('gioi_tinh'),
             "chol": request.form.get('chol'),

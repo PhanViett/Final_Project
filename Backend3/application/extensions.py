@@ -22,3 +22,5 @@ ma = Marshmallow()
 migrate = Migrate()
 apispec = APISpecExt()
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+redisdb = redis.StrictRedis(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"), db=os.getenv(
+    "REDIS_DB"), password=os.getenv("REDIS_PASSWORD"), decode_responses=os.getenv("REDIS_DECODE_RESPONSES"))

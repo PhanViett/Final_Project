@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { InfinitySpin } from "react-loader-spinner";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../../_metronic/assets/custom/table";
 import { useDebounce } from "../../../../../_metronic/helpers";
@@ -13,9 +14,12 @@ import Status from "../../../../components/Status";
 import YesNo from "../../../../components/YesNo";
 import api from "../../../../configs/api";
 import { genderOptions } from "../../../../data";
+import { selectCurrentUser, selectRoleUser } from "../../../../redux-module/auth/authSlice";
 
 
 export function QuanLyLichSu() {
+    const roleUser = useSelector(selectRoleUser)
+    const currentUser = useSelector(selectCurrentUser)
 
     const [form, setForm] = useState({});
 
@@ -44,7 +48,6 @@ export function QuanLyLichSu() {
             value: 1
         },
     ]
-    const [selected, setSelected] = useState(options[0]);
 
 
     useEffect(() => {
@@ -57,12 +60,19 @@ export function QuanLyLichSu() {
 
     const getList = (page_number = page, size = perPage, search_key = searchKey) => {
         setIsLoading(true)
-        const json = {
-            "search_key": search_key,
-            "status": selected.value,
+        let json = {}
+        if (roleUser == "admin") {
+            json = {
+                "search_key": search_key
+            }
+        } else {
+            json = {
+                "id": currentUser.id
+            }
         }
+
         axios
-            .post(api.API_QUAN_LY_LICH_SU + `?page=${page_number}&per_page=${size}`, { search_key: search_key })
+            .post(api.API_QUAN_LY_LICH_SU + `?page=${page_number}&per_page=${size}`, json)
             .then(({ data }) => {
                 let temp_data = data?.results
                 for (let i = 0; i < data?.results.length; i++) {
@@ -97,8 +107,19 @@ export function QuanLyLichSu() {
 
     const handlePerRowsChange = async (newPerPage, page) => {
         setIsLoading(true)
+        let json = {}
+        if (roleUser == "admin") {
+            json = {
+                "search_key": searchKey
+            }
+        } else {
+            json = {
+                "id": currentUser.id
+            }
+        }
+
         axios
-            .post(api.API_QUAN_LY_LICH_SU + `?page=${page}&per_page=${newPerPage}`, {})
+            .post(api.API_QUAN_LY_LICH_SU + `?page=${page}&per_page=${newPerPage}`, json)
             .then(({ data }) => {
                 if (data) {
                     let temp_data = data?.results
@@ -128,9 +149,6 @@ export function QuanLyLichSu() {
             });
     };
 
-    const handleSelect = (value) => {
-        setSelected(value);
-    }
 
     const columns = [
         {
@@ -185,7 +203,7 @@ export function QuanLyLichSu() {
         {
             name: "Kết quả",
             selector: (row) => <Status status={row.result} />,
-            grow: 3,
+            grow: 4,
             center: true
         },
         {

@@ -187,8 +187,17 @@ export function QuanLyNguoiDung() {
 
     const onSubmit = () => {
         if (status === "Thêm mới") {
+            const data = new FormData()
+
+            data.append("ho", form?.ho)
+            data.append("ten", form?.ten)
+            data.append("tai_khoan", form?.tai_khoan)
+            data.append("mat_khau", form?.mat_khau)
+            data.append("dien_thoai", form?.dien_thoai)
+            data.append("email", form?.email)
+
             axios
-                .post(api.API_QUAN_LY_NGUOI_DUNG_CREATE, form)
+                .post(api.API_QUAN_LY_NGUOI_DUNG_CREATE, data)
                 .then(({ data }) => {
                     if (data) {
                         toast.success("Thêm mới thành công", {
@@ -221,8 +230,15 @@ export function QuanLyNguoiDung() {
                 .finally(() => {
                 });
         } else if (status === "Cập nhật") {
+            const data = new FormData()
+
+            data.append("ho", form?.ho)
+            data.append("ten", form?.ten)
+            data.append("dien_thoai", form?.dien_thoai)
+            data.append("email", form?.email)
+
             axios
-                .put(api.API_QUAN_LY_NGUOI_DUNG_UPDATE + "/" + selectedId, form)
+                .put(api.API_QUAN_LY_NGUOI_DUNG_UPDATE + "/" + selectedId, data)
                 .then(({ data }) => {
                     if (data) {
                         toast.success("Cập nhật thành công", {
@@ -326,7 +342,7 @@ export function QuanLyNguoiDung() {
         },
         {
             name: "Giới tính",
-            selector: (row) => row?.gioi_tinh === "N/A" ? <span>{row?.gioi_tinh}</span> : <span className="text-secondary">{row?.gioi_tinh}</span>,
+            selector: (row) => row?.gioi_tinh === "N/A" ? <span style={{ color: "#9fa2ae" }}>{row?.gioi_tinh}</span> : <>{row?.gioi_tinh}</>,
             grow: 2,
             center: true
         },
@@ -361,9 +377,9 @@ export function QuanLyNguoiDung() {
                         }}>
                         <i className="fas fa-edit text-primary"></i>
                     </button>
-                    <button className="btn btn-link ms-2" onClick={() => {setSelectedId(row?.id); handleDelete(row?.id)}}>
+                    {/* <button className="btn btn-link ms-2" onClick={() => {setSelectedId(row?.id); handleDelete(row?.id)}}>
                         <i className="fas fa-trash-alt text-danger"></i>
-                    </button>
+                    </button> */}
                 </div>
             ,
             grow: 1,

@@ -10,7 +10,7 @@ export function Register() {
 
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState("fas fa-eye text-primary mx-auto");
@@ -80,10 +80,12 @@ export function Register() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const newErrors = formValidation();
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            setIsLoading(false);
         } else {
             onSubmit()
         }
@@ -93,8 +95,18 @@ export function Register() {
         delete form.retype_mat_khau
         axios
             .post(api.API_REGISTER, form)
-            .then((data) => {
-                if (data.status === "SUCCESS") {
+            .then(({data}) => {
+                toast.error("Đăng ký thành công", {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    toastId: "error",
+                });
+                if (data.status == "SUCCESS") {
                     setTimeout(() => {
                         navigate("/dang-nhap")
                     }, 2000);
@@ -113,6 +125,7 @@ export function Register() {
                 });
             })
             .finally(() => {
+                setIsLoading(false);
             });
     }
 
@@ -252,14 +265,10 @@ export function Register() {
                                 </Form.Group>
 
                                 <div className="form-group mb-1 text-center">
-                                    <button
-                                        className="btn btn-primary btn-block btn-login"
-                                        style={{ width: "100%", height: "46px" }}
-                                        onClick={(e) => {
-                                            handleSubmit(e)
-                                        }}
-                                    >
-                                        {loading ? (
+
+                                    {isLoading ? (
+                                        <button className="btn btn-primary btn-block btn-login"
+                                            style={{ width: "100%", height: "46px" }}>
                                             <span
                                                 className="indicator-progress"
                                                 style={{ display: "block" }}
@@ -267,13 +276,17 @@ export function Register() {
                                                 Vui lòng chờ...
                                                 <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                                             </span>
-                                        ) : (
-                                            <span>
-                                                <i className="fas fa-chevron-circle-right"></i>
-                                                &nbsp; &nbsp; Đăng ký
-                                            </span>
-                                        )}
-                                    </button>
+                                        </button>
+                                    ) : (
+                                            <button className="btn btn-primary btn-block btn-login"
+                                                style={{ width: "100%", height: "46px" }}
+                                                onClick={(e) => { handleSubmit(e) }}>
+                                                <span>
+                                                    <i className="fas fa-chevron-circle-right"></i>
+                                                    &nbsp; &nbsp; Đăng ký
+                                                </span>
+                                            </button>
+                                    )}
                                 </div>
                             </Form>
                             <div className="form-group text-center mt-2 mb-3">

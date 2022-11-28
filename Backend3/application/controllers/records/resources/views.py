@@ -6,7 +6,9 @@ from application.utils.resource.http_code import HttpCode
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, current_user
 from flask_restful import Resource
-from application.models.nhan_vien import Users
+
+import numpy as np
+import pickle
 
 
 class RecordGetList(Resource):
@@ -43,8 +45,6 @@ class RecordGetList(Resource):
 class RecordCreate(Resource):
     @jwt_required()
     def post(self):
-        schema = RecordSchema()
-
         req = {
             "tuoi": request.json.get("tuoi"),
             "gioi_tinh": request.json.get("gioi_tinh"),
@@ -84,3 +84,45 @@ class RecordDelete(Resource):
         db.session.commit()
 
         return {"msg": "Xóa thông tin chẩn đoán thành công!"}, HttpCode.OK
+
+
+class RecordPredict(Resource):
+    @jwt_required()
+    def post(self):
+        model = pickle.load(open('model.pkl', 'rb'))
+
+        features = [float(i) for i in request.form.values()]
+
+        array_features = [np.array(features)]
+        
+        prediction = model.predict(array_features)
+
+        output = prediction
+        req = {
+            "tuoi": request.form.get("age"),
+            "gioi_tinh": request.form.get("gender"),
+            "height": request.form.get("height"),
+            "weight": request.form.get("weight"),
+            "ap_hi": request.form.get("ap_hi"),
+            "ap_lo": request.form.get("ap_lo"),
+            "chol": request.form.get("chol"),
+            "gluc": request.form.get("gluc"),
+            "smoke": request.form.get("smoke"),
+            "alco": request.form.get("alco"),
+            "active": request.form.get("active"),
+        }
+
+        record = Records( tuoi=req["tuoi"], gioi_tinh=req["gioi_tinh"], height=req["height"], 
+                          weight=req["weight"], ap_hi=req["ap_hi"], ap_lo=req["ap_lo"], 
+                          chol=req["chol"], gluc=req["gluc"], smoke=req["smoke"], alco=req["alco"], 
+                          active=req["active"], result=int(output[0]))
+        
+        record.user_id = current_user.id
+
+        db.session.add(record)
+        db.session.commit()
+
+        if output == 1:
+            return ({'result':'Sức khỏe của bạn rất bình thường.'})
+        else:
+            return ({'result':'Bạn có nguy cơ gặp vấn đề liên quan đến bệnh tim.'})

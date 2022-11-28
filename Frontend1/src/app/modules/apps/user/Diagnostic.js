@@ -7,22 +7,25 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { ThreeDots } from "react-loader-spinner";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { toast } from "react-toastify";
 import api from "../../../configs/api";
 import { genderOptions, levelOptions, ynOptions } from "../../../data";
-import { authActions, selectCurrentUser } from "../../../redux-module/auth/authSlice";
-import { toast } from "react-toastify";
+import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
 
 
 export function Diagnostic() {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const currentUser = useSelector(selectCurrentUser);
 
     const [form, setForm] = useState({});
     const [datas, setDatas] = useState({});
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [predictForm, setPredictForm] = useState({});
 
     const [tuoi, setTuoi] = useState(new Date());
     const [gioiTinh, setGioiTinh] = useState();
@@ -31,20 +34,33 @@ export function Diagnostic() {
     const [alco, setAlco] = useState();
     const [smoke, setSmoke] = useState();
     const [activ, setActiv] = useState();
-    const [isProgressing, setIsProgressing] = useState(true);
     const [isUpdate, setIsUpdate] = useState(false);
+    const [isProgressing, setIsProgressing] = useState(true);
+    const [isManually, setIsManually] = useState(false);
 
     const inputStyle = { fontSize: 14, fontWeight: 400, height: 40 }
 
     useEffect(() => {
         getUserInfo();
     }, [])
-    useEffect(() => {
-        console.log(form);
-    }, [form])
+
+
     const setField = (field, value) => {
         setForm({
             ...form,
+            [field]: value,
+        });
+        if (!!errors[field])
+            setErrors({
+                ...errors,
+                [field]: null,
+            });
+    };
+
+
+    const setPredictField = (field, value) => {
+        setPredictForm({
+            ...predictForm,
             [field]: value,
         });
         if (!!errors[field])
@@ -89,6 +105,13 @@ export function Diagnostic() {
         let gioi_tinh = genderOptions.find((e) => e.value === value);
         setField("gioi_tinh", value);
         setGioiTinh(gioi_tinh);
+    }
+
+    const handleTuoi = (value) => {
+        setField("ngay_sinh", value);
+        const now = new Date().getTime();
+        const diff = Math.round((now - value) / (1000 * 60 * 60 * 24) - 1);
+        setTuoi(diff)
     }
 
     const handleStatics = (value) => {
@@ -145,10 +168,10 @@ export function Diagnostic() {
 
     const formValidation = () => {
         const newErrors = {};
-        const { ho_ten, weight, height } = form;
+        const { ho_ten, ngay_sinh, weight, height } = form;
 
-        if (!ho_ten || ho_ten === "") newErrors.tuoi = "Họ tên không được bỏ trống!";
-        if (!tuoi || tuoi <= 0) newErrors.tuoi = "Ngày sinh không được bỏ trống!";
+        if (!ho_ten || ho_ten === "") newErrors.ho_ten = "Họ tên không được bỏ trống!";
+        if (!ngay_sinh || ngay_sinh <= 0) newErrors.ngay_sinh = "Ngày sinh không được bỏ trống!";
         if (!gioiTinh) newErrors.gioiTinh = "Giới tính không được bỏ trống!"
         if (!weight || weight === "") newErrors.weight = "Cân nặng không được bỏ trống!"
         if (!height || height === "") newErrors.height = "Chiều cao không được bỏ trống!"
@@ -170,15 +193,12 @@ export function Diagnostic() {
             setErrors(newError);
             setIsLoading(false);
         } else {
-
-            const diff = new Date().getTime() - new Date(tuoi).getTime();
-            const day_count = Math.round(diff / (1000 * 3600 * 24))
-
+            setErrors({});
             const json = new FormData();
 
             await json.append("ho_ten", form?.ho_ten.toUpperCase());
             await json.append("ngay_sinh", form?.ngay_sinh);
-            await json.append("tuoi", day_count);
+            await json.append("tuoi", tuoi);
             await json.append("gioi_tinh", form?.gioi_tinh);
             await json.append("height", form?.height);
             await json.append("weight", form?.weight);
@@ -202,7 +222,83 @@ export function Diagnostic() {
                         progress: undefined,
                         toastId: "success",
                     });
-                    dispatch(authActions.setCurrentUser(data?.results))
+                    getUserInfo();
+                })
+                .catch((error) => {
+                    toast.error(error?.data?.errors, {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        toastId: "error",
+                    });
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }
+    }
+
+    const formPredictValidation = () => {
+        const newErrors = {}
+
+        if (!predictForm?.ap_hi || predictForm?.ap_hi === "") {
+            newErrors.ap_hi = "Huyết áp tâm trương không được bỏ trống!"
+        }
+        if (!predictForm?.ap_lo || predictForm?.ap_lo === "") {
+            newErrors.ap_lo = "Huyết áp tâm thu không được bỏ trống!"
+        }
+
+        return newErrors;
+    }
+
+    const handlePredict = (e) => {
+        e.preventDefault();
+
+        const newError = formPredictValidation();
+
+        if (Object.keys(newError).length > 0) {
+            setErrors(newError);
+            setIsLoading(false);
+        } else {
+            const data = new FormData();
+
+            data.append("age", tuoi)
+            data.append("height", form?.height)
+            data.append("weight", form?.weight)
+            data.append("gender", form?.gioi_tinh)
+            data.append("chol", form?.chol)
+            data.append("ap_hi", predictForm?.ap_hi)
+            data.append("ap_lo", predictForm?.ap_lo)
+            data.append("gluc", form?.gluc)
+            data.append("smoke", form?.smoke)
+            data.append("alco", form?.alco)
+            data.append("active", form?.active)
+
+            axios
+                .post(api.API_QUAN_LY_LICH_SU_PREDICT, data)
+                .then(({ data }) => {
+                    setIsManually(false)
+                    setIsProgressing(true)
+                    setIsUpdate(false)
+
+                    toast.success(data?.result, {
+                        position: "top-right",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        toastId: "error",
+                    });
+
+                    setTimeout(() => {
+                        navigate("/admin/quan-ly-lich-su")
+                    }, 2000);
                 })
                 .catch((error) => {
                     toast.error(error?.data?.errors, {
@@ -223,16 +319,6 @@ export function Diagnostic() {
         }
     }
 
-    // const handleTuoi = (value) => {
-    //     if (typeof value === "number") {
-    //         setTuoi(value);
-    //     } else if (typeof value === "object") {
-    //         const diff = new Date().getTime() - new Date(value).getTime();
-    //         setField("tuoi", )
-    //         setTuoi(value)
-    //     }
-    // }
-
     const onReset = () => {
         setErrors({})
         setForm(datas)
@@ -246,7 +332,7 @@ export function Diagnostic() {
             <div>
                 <div className="card-box" style={{ padding: "32px" }}>
                     {isProgressing === true ?
-                        <div style={{ height: "78vh" }}>
+                        <div style={{ height: "47vh" }}>
                             <div className="row">
                                 <div className="col-12 mb-8">
                                     <h4 className="fw-bold">CHẨN ĐOÁN TÌNH TRẠNG</h4>
@@ -271,15 +357,14 @@ export function Diagnostic() {
                                             <button className="btn btn-primary py-0" style={{ fontSize: "13px", height: "38px", width: "130px" }} onClick={() => setIsUpdate(true)}>
                                                 <i className="fas fa-edit me-1" style={{ fontSize: "12px" }}></i>Cập nhật
                                             </button>
-                                        :
+                                            :
                                             <button className="btn btn-link" style={{ fontSize: "13px", height: "38px", width: "130px" }}>
-                                                <span className="indicator-progress" style={{ display: "block",  fontSize: 12 }} >
+                                                <span className="indicator-progress" style={{ display: "block", fontSize: 12 }} >
                                                     Vui lòng chờ...
                                                     <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                                                 </span>
                                             </button>
                                     }
-
                                 </div>
                                 <div className="row mx-1 mb-4">
                                     <div className="col-3">
@@ -294,7 +379,6 @@ export function Diagnostic() {
                                                 disabled={true}
                                             />
                                         } {errors?.password ? (<span className="text-danger">{errors?.password}</span>) : ("")}
-
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Ngày sinh: </span>
@@ -305,16 +389,14 @@ export function Diagnostic() {
                                                 label=" "
                                                 maxDate={new Date()}
                                                 inputFormat="dd/MM/yyyy"
-                                                value={tuoi}
-                                                onChange={(e) => setTuoi(e)}
+                                                value={form?.ngay_sinh}
+                                                onChange={(e) => {handleTuoi(new Date(e).getTime())}}
                                                 renderInput={(params) => <TextField {...params} />}
                                             />
                                         } {errors?.tuoi ? (<span className="text-danger">{errors?.tuoi}</span>) : ("")}
-
                                     </div>
                                     <div className="col-3">
                                         <span className="d-block mb-1" style={{ fontWeight: 500 }}>Giới tính: </span>
-
                                         {isUpdate === false ?
                                             <div className="d-flex align-items-center px-4" style={{ height: 40 }}>{gioiTinh ? gioiTinh.label : "N/A"}</div>
                                             :
@@ -447,10 +529,93 @@ export function Diagnostic() {
                             </div>
                         </div>
                         :
-                        <div className="d-flex justify-content-center align-items-center" style={{ height: "78vh" }}>
-                            Đang nhận data từ thiết bị
-                        </div>
+                        isManually ?
+                            <div style={{ height: "78vh" }} >
+                                <div className="row" style={{ paddingTop: "20vh" }}>
+                                    <div className="col-4"> </div>
+                                    <div className="col-4 mb-6">
+                                        <label className="font-weight-bold">Huyết áp tâm trương:</label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Nhập chỉ số"
+                                            style={{ fontSize: 14, fontWeight: 400 }}
+                                            value={predictForm?.ap_hi ? predictForm?.ap_hi : ""}
+                                            onChange={(e) => setPredictField("ap_hi", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-4"> </div>
+                                    <div className="col-4"> </div>
+                                    <div className="col-4 mb-6">
+                                        <label className="font-weight-bold">Huyết áp tâm thu:</label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Nhập chỉ số"
+                                            style={{ fontSize: 14, fontWeight: 400 }}
+                                            value={predictForm?.ap_lo ? predictForm?.ap_lo : ""}
+                                            onChange={(e) => setPredictField("ap_lo", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-4"> </div>
+                                    <div className="col-4"> </div>
+                                    <div className="col-4">
+                                        {isLoading ? (
+                                            <button className="btn btn-primary btn-block btn-login"
+                                                style={{ width: "100%", height: "46px" }}>
+                                                <span
+                                                    className="indicator-progress"
+                                                    style={{ display: "block" }}
+                                                >
+                                                    Vui lòng chờ...
+                                                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                </span>
+                                            </button>
+                                        ) : (
+                                            <button className="btn btn-primary btn-block btn-login"
+                                                style={{ width: "100%", height: "46px" }} onClick={(e) => handlePredict(e)}>
+                                                <span>
+                                                    <i className="fas fa-chevron-circle-right"></i>
+                                                    &nbsp;&nbsp; Chẩn đoán
+                                                </span>
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="col-4"> </div>
+                                </div>
+                            </div>
+                            :
+                            <div className="d-flex justify-content-center align-items-center" style={{ height: "78vh", flexDirection: "column" }}>
+                                <div className="mb-8">
+                                    <ThreeDots
+                                        height="80"
+                                        width="80"
+                                        radius="9"
+                                        color="#4fa94d"
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
+                                <span style={{ fontSize: 18 }}>
+                                    Đang nhận data từ thiết bị...
+                                </span>
+                                <span>
+                                    hoặc
+                                </span>
+                                <span className="text-primary" style={{ fontSize: 18, textDecoration: "underline", cursor: "pointer" }}
+                                    onClick={() => setIsManually(true)}>
+                                    Nhập thông tin thủ công
+                                </span>
+                            </div>
                     }
+                </div>
+
+                <div className="card-box" style={{ padding: "32px" }}>
+                    <div className="row">
+                        <div className="col-12 mb-8">
+                            <h4 className="fw-bold">LỊCH SỬ GẦN ĐÂY</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
         </LocalizationProvider>

@@ -28,15 +28,15 @@ class TinTucGetList(Resource):
             status = data["status"]
             query = query.filter(TinTuc.status == status)
 
+        if data.get("user_id"):
+            user_id = data["user_id"]
+            query = query.filter(TinTuc.user_id == user_id)
 
         query = query.order_by(TinTuc.created_at.desc())
         res = paginate(query, schema)
 
-        if len(res["results"]) < 1:
-            return {"status": "SUCCESS", "msg": "No data"}, HttpCode.BadRequest
-        elif len(res["results"]) > 0:
+        if len(res["results"]) > 0:
             for x in res["results"]:
-                print("=====>", x)
 
                 data = Users.query.filter(Users.id == x["user_id"]).first()
                 if data is not None:
@@ -50,8 +50,8 @@ class TinTucGetListView(Resource):
         schema_single = TinTucSchema()
         schema_many = TinTucSchema(many=True)
 
-        blog_most = TinTuc.query.order_by(TinTuc.views.desc()).first()
-        blog_remain = TinTuc.query.filter(TinTuc.id != blog_most.id).order_by(TinTuc.updated_at.desc()).all()
+        blog_most = TinTuc.query.order_by(TinTuc.views.desc(), TinTuc.status != 3).first()
+        blog_remain = TinTuc.query.filter(TinTuc.id != blog_most.id, TinTuc.status != 3).order_by(TinTuc.updated_at.desc()).all()
         
         return ({
             "status": "SUCCESS", 
@@ -69,8 +69,8 @@ class TinTucDetail(Resource):
         if tin_tuc is None:
             return ({"status": "FAILED", "msg": "Bài viết không tồn tại trong hệ thống"}), HttpCode.BadRequest
         
-        if tin_tuc is not None and current_user.assigned_role[0].ten_en == "user":
-            return ({"status": "FAILED", "msg": "Bạn không có quyền truy cập bài viết này"}), HttpCode.BadRequest
+        # if tin_tuc is not None and current_user.assigned_role[0].ten_en == "user":
+        #     return ({"status": "FAILED", "msg": "Bạn không có quyền truy cập bài viết này"}), HttpCode.BadRequest
 
         tin_tuc.views = tin_tuc.views + 1
         

@@ -9,6 +9,7 @@ export default {
     CDN: PATH_CDN,
     API_LOGIN: API_URL + "login",
     API_REGISTER: API_URL + "register",
+    API_LOGOUT: API_URL + "logout",
     API_GET_USER: API_URL + "auth/get_current_user",
 
     API_TINH_THANH: API_URL + PATH_V1 + "danh-muc/tinh-thanh",
@@ -37,6 +38,7 @@ export default {
     API_QUAN_LY_LICH_SU_CREATE: API_URL + PATH_V1 + "record-create",
     API_QUAN_LY_LICH_SU_UPDATE: API_URL + PATH_V1 + "record-update",
     API_QUAN_LY_LICH_SU_DELETE: API_URL + PATH_V1 + "record-delete",
+    API_QUAN_LY_LICH_SU_PREDICT: API_URL + PATH_V1 + "record-predict",
 
     // QUAN LY TIN TUC
     API_QUAN_LY_TIN_TUC: API_URL + PATH_V1 + "tin-tuc-get-list",

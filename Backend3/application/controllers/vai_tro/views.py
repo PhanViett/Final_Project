@@ -87,31 +87,8 @@ def assign_role(userid, roleid):
 
 @blueprint.route("/unassign/<userid>", methods=["DELETE"])
 @jwt_required()
-@permissions_required("setting", ["manage_role"])
 def unassign_role(userid):
-    # region Swagger UI
-    """Unassign nhan_vien with vai_tro
-    ---
-    delete:
-        tags:
-          - vai_tro
-        summary: Unassign vai_tro
-        description: Unassign a nhan_vien with a vai_tro
-        parameters:
-          - in: path
-            name: userid
-            schema:
-              type: string
-        responses:
-          200:
-            description: nhan_vien has been unassigned successfully
-          400:
-            description: bad request
-          401:
-            description: unauthorized
-    """
-    # endregion
-    target_nhan_vien: NhanVien = NhanVien.query.filter(NhanVien.id == userid).first_or_404()
+    target_nhan_vien: Users = Users.query.filter(Users.id == userid).first_or_404()
     target_nhan_vien.vai_tro_id = DEFAULT_USER_ID
     db.session.commit()
     return "Tước vai trò thành công", HttpCode.OK

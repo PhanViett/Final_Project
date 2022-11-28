@@ -8,8 +8,7 @@ import { commonActions } from "../../../redux-module/common/commonSlice";
 
 export function Homepage() {
     const dispatch = useDispatch();
-    const navigate = useNavigate
-    ();
+    const navigate = useNavigate();
 
     const [blogFirst, setBlogFirst] = useState([]);
     const [blogRemain, setBlogRemain] = useState([]);

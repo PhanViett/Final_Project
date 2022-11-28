@@ -2,18 +2,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-import { Oval } from "react-loader-spinner";
+import { InfinitySpin, Oval } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { conditionalRowStyles, customStyles, paginationOptions } from "../../../../_metronic/assets/custom/table";
+import { BlogStatus } from "../../../components/BlogStatus";
 import api from "../../../configs/api";
+import { selectCurrentUser } from "../../../redux-module/auth/authSlice";
 import { commonActions, selectBlogDetail } from "../../../redux-module/common/commonSlice";
 
 
 export function BlogList() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const currentUser = useSelector(selectCurrentUser)
 
     const blogDetail = useSelector(selectBlogDetail)
 
@@ -32,10 +35,14 @@ export function BlogList() {
         dispatch(commonActions.setBlogDetail({}));
     }, [])
 
+    useEffect(() => {
+        getList(1)
+    }, [active])
 
     const getList = ({ page_number = page, size = perPage }) => {
+        setIsLoading(true);
         axios
-            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page_number}&per_page=${size}`, { "status": active })
+            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page_number}&per_page=${size}`, { "status": active, "user_id": currentUser.id })
             .then(({ data }) => {
                 if (data) {
                     let list = data?.results;
@@ -58,6 +65,9 @@ export function BlogList() {
                     toastId: "error",
                 });
             })
+            .finally(() => {
+                setIsLoading(false);
+            })
     }
 
 
@@ -68,7 +78,7 @@ export function BlogList() {
 
     const handlePerRowsChange = async (newPerPage, page) => {
         axios
-            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page}&per_page=${newPerPage}`, { "status": active })
+            .post(api.API_QUAN_LY_TIN_TUC + `?page=${page}&per_page=${newPerPage}`, { "status": active, "user_id": currentUser.id })
             .then(({ data }) => {
                 if (data) {
                     let list = data?.results;
@@ -91,13 +101,15 @@ export function BlogList() {
                     toastId: "error",
                 });
             })
-            .finally(() => { });
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     const getBlogDetail = (id) => {
         axios
-            .post(api.API_QUAN_LY_TIN_TUC_DETAIL, {"id": id})
-            .then(({data}) => {
+            .post(api.API_QUAN_LY_TIN_TUC_DETAIL, { "id": id })
+            .then(({ data }) => {
                 if (data) {
                     dispatch(commonActions.setBlogDetail(data?.results))
                     navigate("/tin-tuc/viet-bai")
@@ -108,7 +120,7 @@ export function BlogList() {
     const blogDelete = (id) => {
         axios
             .delete(api.API_QUAN_LY_TIN_TUC_DELETE + "/" + id)
-            .then(({data}) =>{
+            .then(({ data }) => {
                 if (data) {
                     toast.success("Xóa bài viết thành công", {
                         position: "top-right",
@@ -168,7 +180,7 @@ export function BlogList() {
         {
             name: "Trạng thái",
             center: true,
-            selector: (row) => row.status ? <span>{row?.status}</span> : <span className="text-danger"> N/A</span>,
+            selector: (row) => row.status ? <BlogStatus status={row?.status} /> : <span className="text-danger"> N/A</span>,
             grow: 2,
         },
         {
@@ -176,53 +188,25 @@ export function BlogList() {
             grow: 2,
             center: true,
             selector: (row) =>
-                blogList.length === 1 ? (
-                    <div className="d-flex px-0">
-                        <button
-                            className="btn btn-link"
-                            title="Chỉnh sửa"
-                            onClick={() => {
-                                getBlogDetail(row?.id)
-                            }}
-                        >
-                            <i className="fas fa-eye text-primary me-3"></i>
-                        </button>
-                        <button
-                            className="btn btn-link"
-                            title="Xóa"
-                            onClick={() => {
-                            }}
-                        >
-                            <i className="fas fa-trash text-danger me-3"></i>
-                        </button>
-                    </div>
-                ) : (
-                    <div className="container my-3">
-                        <Dropdown>
-                            <Dropdown.Toggle variant="link" style={{ float: "right" }}>
-                                <i
-                                    className="fas fa-bars"
-                                    style={{ marginLeft: "3px", marginRight: "-3px" }}
-                                ></i>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu flip={true} bsPrefix="dropdown-menu dropdown-box">
-                                <Dropdown.Item
-                                    onClick={() => {
-                                    }}
-                                >
-                                    <i className="fas fa-eye text-primary me-3"></i>Cập nhật
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                    }}
-                                >
-                                    <i className="fas fa-trash text-danger me-3"></i>Xóa
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                ),
+                <div className="d-flex px-0">
+                    <button
+                        className="btn btn-link"
+                        title="Chỉnh sửa"
+                        onClick={() => {
+                            getBlogDetail(row?.id)
+                        }}
+                    >
+                        <i className="fas fa-eye text-primary me-3"></i>
+                    </button>
+                    <button
+                        className="btn btn-link"
+                        title="Xóa"
+                        onClick={() => {
+                        }}
+                    >
+                        <i className="fas fa-trash text-danger me-3"></i>
+                    </button>
+                </div>
         },
     ];
 
@@ -279,10 +263,9 @@ export function BlogList() {
                         }}
                         progressComponent={
                             <div style={{ padding: "24px" }}>
-                                <Oval
-                                    arialLabel="loading-indicator"
-                                    color="#007bff"
-                                    height={40}
+                                <InfinitySpin
+                                    width='200'
+                                    color="#4fa94d"
                                 />
                             </div>
                         }

@@ -41,5 +41,24 @@ const levelOptions = [
   }
 ]
 
+const statusOpstions = [
+  {
+    label: "Lưu nháp",
+    value: 0
+  },
+  {
+    label: "Chờ xuất bản",
+    value: 1
+  },
+  {
+    label: "Đã xuất bản",
+    value: 2
+  },
+  {
+    label: "Bị từ chối",
+    value: 3
+  }
+]
 
-export {ynOptions, genderOptions, levelOptions}
+
+export { ynOptions, genderOptions, levelOptions, statusOpstions }
